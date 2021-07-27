@@ -17,5 +17,6 @@ export default {
     'Sequence to sequence',
     'Image Classification',
     'Speech to Text',
+    'Entity Recognition'
   ]
 }

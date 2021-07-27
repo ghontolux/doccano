@@ -15,12 +15,15 @@ SEQUENCE_LABELING = 'SequenceLabeling'
 SEQ2SEQ = 'Seq2seq'
 SPEECH2TEXT = 'Speech2text'
 IMAGE_CLASSIFICATION = 'ImageClassification'
+ENTITY_RECOGNITION = "EntityRecognition"
+
 PROJECT_CHOICES = (
     (DOCUMENT_CLASSIFICATION, 'document classification'),
     (SEQUENCE_LABELING, 'sequence labeling'),
     (SEQ2SEQ, 'sequence to sequence'),
     (SPEECH2TEXT, 'speech to text'),
-    (IMAGE_CLASSIFICATION, 'image classification')
+    (IMAGE_CLASSIFICATION, 'image classification'),
+    (ENTITY_RECOGNITION, 'entity recognition')
 )
 
 
@@ -59,6 +62,15 @@ class SequenceLabelingProject(Project):
 
     def get_annotation_class(self):
         return Span
+
+    def is_task_of(self, task: Literal['text', 'image', 'speech']):
+        return task == 'text'
+
+
+class EntityRecognitionProject(Project):
+
+    def get_annotation_class(self):
+        return EntitySpan
 
     def is_task_of(self, task: Literal['text', 'image', 'speech']):
         return task == 'text'
@@ -277,6 +289,29 @@ class Span(Annotation):
             'end_offset'
         )
 
+
+class EntitySpan(Annotation):
+    example = models.ForeignKey(
+        to=Example,
+        on_delete=models.CASCADE,
+        related_name='entityspans'
+    )
+    ent_id = models.TextField()
+    start_offset = models.IntegerField()
+    end_offset = models.IntegerField()
+
+    def clean(self):
+        if self.start_offset >= self.end_offset:
+            raise ValidationError('start_offset > end_offset')
+
+    class Meta:
+        unique_together = (
+            'example',
+            'user',
+            'ent_id',
+            'start_offset',
+            'end_offset'
+        )
 
 class TextLabel(Annotation):
     objects = Seq2seqAnnotationManager()

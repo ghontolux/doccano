@@ -123,6 +123,7 @@ export default Vue.extend({
         'Seq2seq',
         'ImageClassification',
         'Speech2text',
+        'EntityRecognition'
       ]
     },
     hasSingleLabelOption() {

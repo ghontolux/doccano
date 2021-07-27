@@ -7,12 +7,12 @@ from rest_framework.exceptions import ValidationError
 from rest_polymorphic.serializers import PolymorphicSerializer
 
 from .models import (DOCUMENT_CLASSIFICATION, IMAGE_CLASSIFICATION, SEQ2SEQ,
-                     SEQUENCE_LABELING, SPEECH2TEXT, AnnotationRelations,
+                     SEQUENCE_LABELING, SPEECH2TEXT, ENTITY_RECOGNITION, AnnotationRelations,
                      AutoLabelingConfig, Category, Comment, Example,
                      ExampleState, ImageClassificationProject, Label, Project,
                      RelationTypes, Role, RoleMapping, Seq2seqProject,
                      SequenceLabelingProject, Span, Speech2textProject, Tag,
-                     TextClassificationProject, TextLabel)
+                     TextClassificationProject, TextLabel, EntityRecognitionProject, EntitySpan)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -206,6 +206,12 @@ class ImageClassificationProjectSerializer(ProjectSerializer):
         model = ImageClassificationProject
 
 
+class EntityRecognitionProjectSerializer(ProjectSerializer):
+
+    class Meta(ProjectSerializer.Meta):
+        model = EntityRecognitionProject
+
+
 class ProjectPolymorphicSerializer(PolymorphicSerializer):
     model_serializer_mapping = {
         Project: ProjectSerializer,
@@ -268,6 +274,24 @@ class TextLabelSerializer(serializers.ModelSerializer):
             'text',
         )
         read_only_fields = ('user',)
+
+
+class EntityLabelSerializer(serializers.ModelSerializer):
+    example = serializers.PrimaryKeyRelatedField(queryset=Example.objects.all())
+
+    class Meta:
+        model = EntitySpan
+        fields = (
+            'id',
+            'prob',
+            'user',
+            'example',
+            'created_at',
+            'updated_at',
+            'ent_id',
+            'start_offset',
+            'end_offset'
+        )
 
 
 class RoleSerializer(serializers.ModelSerializer):
@@ -336,6 +360,7 @@ def get_annotation_serializer(task: str):
         SEQ2SEQ: TextLabelSerializer,
         SPEECH2TEXT: TextLabelSerializer,
         IMAGE_CLASSIFICATION: CategorySerializer,
+        ENTITY_RECOGNITION: EntityLabelSerializer
     }
     try:
         return mapping[task]

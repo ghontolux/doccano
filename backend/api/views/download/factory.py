@@ -1,7 +1,7 @@
 from typing import Type
 
 from ...models import (DOCUMENT_CLASSIFICATION, IMAGE_CLASSIFICATION, SEQ2SEQ,
-                       SEQUENCE_LABELING, SPEECH2TEXT)
+                       SEQUENCE_LABELING, SPEECH2TEXT, ENTITY_RECOGNITION)
 from . import catalog, repositories, writer
 
 
@@ -12,6 +12,7 @@ def create_repository(project) -> repositories.BaseRepository:
         SEQ2SEQ: repositories.Seq2seqRepository,
         IMAGE_CLASSIFICATION: repositories.FileRepository,
         SPEECH2TEXT: repositories.Speech2TextRepository,
+        ENTITY_RECOGNITION: repositories.EntityRecognitionRepository,
     }
     if project.project_type not in mapping:
         ValueError(f'Invalid project type: {project.project_type}')

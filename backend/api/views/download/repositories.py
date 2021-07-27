@@ -162,3 +162,13 @@ class Seq2seqRepository(TextRepository):
         for a in doc.texts.all():
             label_per_user[a.user.username].append(a.text)
         return label_per_user
+
+
+class EntityRecognitionRepository(TextRepository):
+
+    def label_per_user(self, doc) -> Dict:
+        label_per_user = defaultdict(list)
+        for a in doc.spans.all():
+            label = (a.start_offset, a.end_offset, a.label.ent_id)
+            label_per_user[a.user.username].append(label)
+        return label_per_user

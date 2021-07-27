@@ -1,11 +1,11 @@
 from collections import defaultdict
-from typing import Dict, List, Type
+from typing import Dict, List, Optional, Type
 
 from pydantic import BaseModel
 from typing_extensions import Literal
 
 from ...models import (DOCUMENT_CLASSIFICATION, IMAGE_CLASSIFICATION, SEQ2SEQ,
-                       SEQUENCE_LABELING, SPEECH2TEXT)
+                       SEQUENCE_LABELING, SPEECH2TEXT, ENTITY_RECOGNITION)
 from . import examples
 
 encodings = Literal[
@@ -249,3 +249,6 @@ Options.register(IMAGE_CLASSIFICATION, ImageFile, OptionNone, examples.Generic_I
 
 # Speech to Text
 Options.register(SPEECH2TEXT, AudioFile, OptionNone, examples.Generic_AudioFile)
+
+# Entity Recognition
+Options.register(ENTITY_RECOGNITION, TextFile, OptionEncoding, examples.Generic_TextFile)

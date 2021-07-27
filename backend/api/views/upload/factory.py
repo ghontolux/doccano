@@ -1,10 +1,12 @@
 from ...models import (DOCUMENT_CLASSIFICATION, IMAGE_CLASSIFICATION, SEQ2SEQ,
-                       SEQUENCE_LABELING, SPEECH2TEXT)
+                       SEQUENCE_LABELING, SPEECH2TEXT, ENTITY_RECOGNITION)
 from . import catalog, data, dataset, label
 
 
 def get_data_class(project_type: str):
-    text_projects = [DOCUMENT_CLASSIFICATION, SEQUENCE_LABELING, SEQ2SEQ]
+    text_projects = [
+        DOCUMENT_CLASSIFICATION, SEQUENCE_LABELING, 
+        SEQ2SEQ, ENTITY_RECOGNITION]
     if project_type in text_projects:
         return data.TextData
     else:
@@ -36,6 +38,7 @@ def get_label_class(project_type: str):
         SEQ2SEQ: label.TextLabel,
         IMAGE_CLASSIFICATION: label.CategoryLabel,
         SPEECH2TEXT: label.TextLabel,
+        ENTITY_RECOGNITION: label.OffsetLabel,
     }
     if project_type not in mapping:
         ValueError(f'Invalid project type: {project_type}')
