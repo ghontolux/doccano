@@ -37,11 +37,6 @@ export default {
       type: String,
       default: '#64FFDA'
     },
-    labels: {
-      type: Array,
-      default: () => [],
-      required: true
-    },
     newline: {
       type: Boolean
     },

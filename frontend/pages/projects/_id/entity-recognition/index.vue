@@ -22,13 +22,11 @@
         <v-card-text class="title">
           <entity-item-box
             :labels="labels"
-            :link-types="linkTypes"
             :text="doc.text"
             :entities="annotations"
             :delete-annotation="remove"
             :update-entity="update"
             :add-entity="add"
-            :hide-all-link-menus="hideAllLinkMenus"
           />
         </v-card-text>
       </v-card>

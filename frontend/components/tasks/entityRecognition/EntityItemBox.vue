@@ -9,12 +9,8 @@
           :newline="chunk.newline"
           :label="chunk.label"
           :color="chunk.color"
-          :labels="labels"
-          :source-chunk="sourceChunk"
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
-          @selectSource="selectSource(chunk)"
-          @selectTarget="selectTarget(chunk)"
       />
       <v-menu
           v-model="showMenu"
@@ -45,7 +41,7 @@
           <v-btn
             color="primary"
             text
-            @click="onSubmit()"
+            @click="onSubmit"
           >
             Save
           </v-btn>
@@ -95,22 +91,6 @@ export default {
       required: true
     },
     addEntity: {
-      type: Function,
-      default: () => ([]),
-      required: true
-    },
-    sourceChunk: {
-      type: Object,
-      default: () => {
-      },
-      required: true
-    },
-    selectSource: {
-      type: Function,
-      default: () => ([]),
-      required: true
-    },
-    selectTarget: {
       type: Function,
       default: () => ([]),
       required: true
