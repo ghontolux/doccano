@@ -252,3 +252,5 @@ Options.register(SPEECH2TEXT, AudioFile, OptionNone, examples.Generic_AudioFile)
 
 # Entity Recognition
 Options.register(ENTITY_RECOGNITION, TextFile, OptionEncoding, examples.Generic_TextFile)
+Options.register(ENTITY_RECOGNITION, TextLine, OptionEncoding, examples.Generic_TextLine)
+Options.register(ENTITY_RECOGNITION, JSONL, OptionColumn, examples.Offset_JSONL)
