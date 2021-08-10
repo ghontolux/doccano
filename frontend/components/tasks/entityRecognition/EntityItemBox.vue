@@ -8,7 +8,7 @@
           :content="chunk.text"
           :newline="chunk.newline"
           :label="chunk.label"
-          :color="chunk.color"
+          :color="defaultColor"
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
       />
@@ -22,7 +22,7 @@
       >
         <v-card>
         <v-text-field
-            v-model="input"
+            v-model="entInput"
             label="Entity ID"
           ></v-text-field>
         
@@ -41,7 +41,7 @@
           <v-btn
             color="primary"
             text
-            @click="onSubmit"
+            @click="onSubmit(entInput)"
           >
             Save
           </v-btn>
@@ -103,7 +103,9 @@ export default {
       x: 0,
       y: 0,
       start: 0,
-      end: 0
+      end: 0,
+      entInput: "",
+      defaultColor: "#9CCC65"
     }
   },
 
@@ -157,9 +159,6 @@ export default {
 
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, parentPos.width, parentPos.height);
-
-      const topPoints = this.drawnCountPoints(this.chunks.length);
-      const bottomPoints = this.drawnCountPoints(this.chunks.length);
 
       const chunks = this.chunks;
 
@@ -251,33 +250,23 @@ export default {
       }
     },
 
-    assignLabel(labelId) {
+    assignLabel(entInput) {
       if (this.validateSpan()) {
-        this.addEntity(this.start, this.end, labelId)
+        this.addEntity(this.start, this.end, entInput)
         this.showMenu = false
         this.start = 0
         this.end = 0
       }
     },
 
-    drawnCountPoints(size) {
-      const points = Array(size);
-
-      for (let i = 0; i < points.length; i++) {
-        points[i] = {
-          drawn: 0,
-          count: 0
-        }
-      }
-
-      return points;
-    },
     onCancel(){
       this.showMenu = false;
-      this.input = "";
+      this.entInput = "";
     },
-    onSubmit(){
+    onSubmit(entInput){
+      this.assignLabel(entInput)
       this.showMenu = false;
+      this.entInput = "";
     }
   }
 }
