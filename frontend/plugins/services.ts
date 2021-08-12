@@ -7,6 +7,7 @@ import { APIParseRepository } from '../repositories/upload/apiParseRepository'
 import { ParseApplicationService } from '../services/application/upload/parseApplicationService'
 import { APISequenceLabelingRepository } from '~/repositories/tasks/sequenceLabeling/apiSequenceLabeling'
 import { APISeq2seqRepository } from '~/repositories/tasks/seq2seq/apiSeq2seq'
+import {APIEntityRecognitionRepository} from '~/repositories/tasks/entityRecognition/apiEntityRecognition'
 import { APIConfigRepository } from '~/repositories/autoLabeling/config/apiConfigRepository'
 import { APITemplateRepository } from '~/repositories/autoLabeling/template/apiTemplateRepository'
 import { APIUserRepository } from '~/repositories/user/apiUserRepository'
@@ -34,6 +35,7 @@ import { ConfigApplicationService } from '~/services/application/autoLabeling/co
 import { TemplateApplicationService } from '~/services/application/autoLabeling/templateApplicationService'
 import { APITextClassificationRepository } from '~/repositories/tasks/textClassification/apiTextClassification'
 import { TextClassificationApplicationService } from '~/services/application/tasks/textClassification/textClassificationApplicationService'
+import {EntityRecognitionApplicationService} from '~/services/application/tasks/entityRecognition/entityRecognitionApplicationService'
 import { AuthApplicationService } from '~/services/application/auth/authApplicationService'
 import { APIDownloadFormatRepository } from '~/repositories/download/apiDownloadFormatRepository'
 import { APIDownloadRepository } from '~/repositories/download/apiDownloadRepository'
@@ -58,6 +60,7 @@ export interface Services {
   textClassification: TextClassificationApplicationService,
   sequenceLabeling: SequenceLabelingApplicationService,
   seq2seq: Seq2seqApplicationService,
+  entityRecognition: EntityRecognitionApplicationService,
   option: OptionApplicationService,
   config: ConfigApplicationService,
   template: TemplateApplicationService,
@@ -88,6 +91,7 @@ const plugin: Plugin = (context, inject) => {
   const exampleRepository    = new APIExampleRepository()
   const textClassificationRepository = new APITextClassificationRepository()
   const sequenceLabelingRepository   = new APISequenceLabelingRepository()
+  const entityRecognitionRepository = new APIEntityRecognitionRepository()
   const linkRepository = new ApiLinkRepository()
   const seq2seqRepository = new APISeq2seqRepository()
   const optionRepository     = new LocalStorageOptionRepository()
@@ -113,6 +117,7 @@ const plugin: Plugin = (context, inject) => {
   const textClassification = new TextClassificationApplicationService(textClassificationRepository)
   const sequenceLabeling   = new SequenceLabelingApplicationService(sequenceLabelingRepository, linkRepository)
   const seq2seq = new Seq2seqApplicationService(seq2seqRepository)
+  const entityRecognition = new EntityRecognitionApplicationService(entityRecognitionRepository)
   const option = new OptionApplicationService(optionRepository)
   const config = new ConfigApplicationService(configRepository)
   const tag = new TagApplicationService(tagRepository)
@@ -137,6 +142,7 @@ const plugin: Plugin = (context, inject) => {
     textClassification,
     sequenceLabeling,
     seq2seq,
+    entityRecognition,
     option,
     config,
     template,

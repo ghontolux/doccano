@@ -292,6 +292,7 @@ class EntityLabelSerializer(serializers.ModelSerializer):
             'start_offset',
             'end_offset'
         )
+        read_only_fields = ('user',)
 
 
 class RoleSerializer(serializers.ModelSerializer):
