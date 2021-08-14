@@ -70,11 +70,6 @@ export default {
       default: '',
       required: true
     },
-    labels: {
-      type: Array,
-      default: () => ([]),
-      required: true
-    },
     entities: {
       type: Array,
       default: () => ([]),
@@ -125,12 +120,11 @@ export default {
         chunks = chunks.concat(this.makeChunks(piece))
         startOffset = entity.endOffset
         // add entities to chunks.
-        const label = this.labelObject[entity.label]
         piece = characters.slice(entity.startOffset, entity.endOffset).join('')
         chunks.push({
           id: entity.id,
-          label: label.text,
-          color: label.backgroundColor,
+          label: entity.ent_id,
+          color: this.defaultColor,
           text: piece,
         })
       }
@@ -140,14 +134,6 @@ export default {
 
       return chunks;
     },
-
-    labelObject() {
-      const obj = {}
-      for (const label of this.labels) {
-        obj[label.id] = label
-      }
-      return obj
-    }
   },
 
   updated() {
@@ -159,9 +145,6 @@ export default {
 
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, parentPos.width, parentPos.height);
-
-      const chunks = this.chunks;
-
     });
   },
 
