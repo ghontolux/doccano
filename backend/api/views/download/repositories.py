@@ -166,9 +166,15 @@ class Seq2seqRepository(TextRepository):
 
 class EntityRecognitionRepository(TextRepository):
 
+    @property
+    def docs(self):
+        return Example.objects.filter(project=self.project).prefetch_related(
+            'entityspans__user'
+        )
+
     def label_per_user(self, doc) -> Dict:
         label_per_user = defaultdict(list)
-        for a in doc.spans.all():
-            label = (a.start_offset, a.end_offset, a.label.ent_id)
+        for a in doc.entityspans.all():
+            label = (a.start_offset, a.end_offset, a.ent_id)
             label_per_user[a.user.username].append(label)
         return label_per_user
