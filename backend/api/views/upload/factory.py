@@ -38,7 +38,7 @@ def get_label_class(project_type: str):
         SEQ2SEQ: label.TextLabel,
         IMAGE_CLASSIFICATION: label.CategoryLabel,
         SPEECH2TEXT: label.TextLabel,
-        ENTITY_RECOGNITION: label.OffsetLabel,
+        ENTITY_RECOGNITION: label.OffsetEntIdLabel,
     }
     if project_type not in mapping:
         ValueError(f'Invalid project type: {project_type}')

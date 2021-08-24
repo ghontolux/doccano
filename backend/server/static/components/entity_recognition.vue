@@ -22,14 +22,14 @@ block annotation-area
 
     div.card-content
       div.content.scrollable(v-if="docs[pageNumber] && annotations[pageNumber]", ref="textbox")
-        annotator(
+        entityAnnotator(
           v-bind:labels="labels"
           v-bind:entity-positions="annotations[pageNumber]"
           v-bind:search-query="searchQuery"
           v-bind:text="docs[pageNumber].text"
           v-on:remove-label="removeLabel"
           v-on:add-label="addLabel"
-          ref="annotator"
+          ref="entityAnnotator"
         )
 </template>
 
@@ -41,20 +41,20 @@ block annotation-area
 
 <script>
 import annotationMixin from './annotationMixin';
-import Annotator from './annotator.vue';
+import entityAnnotator from './entity_annotator.vue';
 import HTTP from './http';
 import { simpleShortcut } from './filter';
 
 export default {
   filters: { simpleShortcut },
 
-  components: { Annotator },
+  components: { entityAnnotator },
 
   mixins: [annotationMixin],
 
   methods: {
     annotate(labelId) {
-      this.$refs.annotator.addLabel(labelId);
+      this.$refs.entityAnnotator.addLabel(labelId);
     },
 
     addLabel(annotation) {

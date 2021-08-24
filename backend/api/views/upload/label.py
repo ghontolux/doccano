@@ -80,6 +80,34 @@ class OffsetLabel(Label):
         )
 
 
+class OffsetEntIdLabel(Label):
+    ent_id: str
+    start_offset: int
+    end_offset: int
+
+    def has_name(self) -> bool:
+        return True
+    
+    @property
+    def name(self) -> str:
+        return self.ent_id
+    
+    @classmethod
+    def parse(cls, obj: Any):
+        if isinstance(obj, list) or isinstance(obj, tuple):
+            columns = ['start_offset', 'end_offset', 'ent_id']
+            obj = zip(columns, obj)
+            return cls.parse_obj(obj)
+        elif isinstance(obj, dict):
+            return cls.parse_obj(obj)
+        else:
+            raise TypeError(f'{obj} is invalid type.')
+    
+    def replace(self, mapping: Dict[str, int]) -> 'Label':
+        return self
+
+
+
 class TextLabel(Label):
     text: str
 
