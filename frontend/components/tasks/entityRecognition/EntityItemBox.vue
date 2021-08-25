@@ -21,7 +21,9 @@
           offset-y
       >
         <v-card>
-        <v-text-field
+        <v-text-field 
+            @focus="setMarkedText(chunks.text)"
+            autofocus
             v-model="entInput"
             label="Entity ID"
           ></v-text-field>
@@ -246,10 +248,15 @@ export default {
       this.showMenu = false;
       this.entInput = "";
     },
+    
     onSubmit(entInput){
       this.assignLabel(entInput)
       this.showMenu = false;
       this.entInput = "";
+    },
+
+    setMarkedText(){
+      this.entInput = this.text.slice(this.start, this.end)
     }
   }
 }
