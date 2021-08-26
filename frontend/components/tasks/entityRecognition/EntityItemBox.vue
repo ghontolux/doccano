@@ -21,11 +21,11 @@
           offset-y
       >
         <v-card>
-        <v-text-field 
-            @focus="setMarkedText(chunks.text)"
-            autofocus
+        <v-text-field
             v-model="entInput"
-            label="Entity ID"
+            label="Entity ID" 
+            autofocus
+            @focus="setMarkedText(chunks.text)"
           ></v-text-field>
         
         <v-divider></v-divider>
