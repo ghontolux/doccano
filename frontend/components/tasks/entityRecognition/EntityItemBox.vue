@@ -14,6 +14,7 @@
       />
       <v-menu
           v-model="showMenu"
+          :nudge-width="300"
           :close-on-content-click="false"
           :position-x="x"
           :position-y="y"
@@ -21,17 +22,56 @@
           offset-y
       >
         <v-card>
-        <v-text-field
-            v-model="entInput"
-            label="Entity ID" 
+      <v-card-text>
+        <v-autocomplete
+            v-model="model"
+            :items="items"
+            :loading="isLoading"
+            :search-input.sync="search"
+            color="white"
+            hide-no-data
+            hide-selected
+            item-text="Description"
+            item-value="API"
+            label="Public APIs"
+            placeholder="Entity Surface"
+            prepend-icon="mdi-database-search"
+            return-object
             autofocus
-            @focus="setMarkedText(chunks.text)"
-          ></v-text-field>
+            @focus="setSearchVal"
+        ></v-autocomplete>
+      </v-card-text>
+      <v-divider></v-divider>
+      <v-expand-transition>
+        <v-list
+          v-if="model"
+          class="red lighten-4"
+        >
+          <v-list-item
+            v-for="(field, i) in fields"
+            :key="i"
+          >
+            <v-list-item-content>
+              <v-list-item-title v-text="field.value"></v-list-item-title>
+              <v-list-item-subtitle v-text="field.key"></v-list-item-subtitle>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list>
+      </v-expand-transition>
+      <v-card-actions>
+        <v-spacer></v-spacer>
+        <v-btn
+          :disabled="!model"
+          color="grey darken-3"
+          @click="model = null"
+        >
+          Clear
+          <v-icon right>
+            mdi-close-circle
+          </v-icon>
+        </v-btn>
+      </v-card-actions>
         
-        <v-divider></v-divider>
-        
-
-
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
@@ -102,7 +142,14 @@ export default {
       start: 0,
       end: 0,
       entInput: "",
-      defaultColor: "#9CCC65"
+      defaultColor: "#9CCC65",
+
+      // Autocomplete
+      descriptionLimit: 60,
+      entries: [],
+      isLoading: false,
+      model: null,
+      search: "",
     }
   },
 
@@ -136,7 +183,76 @@ export default {
 
       return chunks;
     },
+
+    // autocomplete
+    fields() {
+      if (!this.model) return []
+
+      return Object.keys(this.model).map(key => {
+        return {
+          key,
+          value: this.model[key] || 'n/a',
+        }
+      })
+    },
+    items() {
+      return this.entries.map(entry => {
+        const Description = entry.label.length > this.descriptionLimit
+          ? entry.label.slice(0, this.descriptionLimit) + '...'
+          : entry.label
+
+        return Object.assign({}, entry, { Description })
+      })
+    },
   },
+
+  watch: {
+      search(val) {
+        // Items have already been loaded
+        // if (this.items.length > 0) return
+        // Items have already been requested
+        if (this.isLoading) return
+        this.isLoading = true
+        // Lazily load input items
+        const call_txt = "text=" + val + "&nerFormat=candidates&services=entities"
+        fetch(
+            // 'https://api.publicapis.org/entries'
+            "/txt-api/", 
+            {
+                body: call_txt,
+                headers: {
+                  "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                  "X-Api-Key": "XXX",
+                  // "Access-Control-Allow-Origin": "https://bmf-dev.txtwerk.de",
+                  "Access-Control-Request-Headers": "X-Api-Key",
+                  // "Access-Control-Request-Method": "POST"
+                },
+                method: "POST"
+            }
+          )
+          .then(res => res.json())
+          .then(res => {
+            if (
+                    Array.isArray(res.entities) &&
+                    res.entities.length && 
+                    Object.prototype.hasOwnProperty.call(res.entities[0], "candidates")){
+                const entries = res.entities[0].candidates
+                const count = entries.length
+                this.count = count
+                this.entries = entries
+            }
+            else {
+                this.count = 0
+                this.entries = []
+            }
+            console.log(this.entries)
+          })
+          .catch(err => {
+            console.log(err)
+          })
+          .finally(() => (this.isLoading = false))
+      },
+    },
 
   updated() {
     this.$nextTick(() => {
@@ -255,10 +371,11 @@ export default {
       this.entInput = "";
     },
 
-    setMarkedText(){
-      this.entInput = this.text.slice(this.start, this.end)
+    setSearchVal(){
+      this.search = this.text.slice(this.start, this.end)
+      this.entries = []
     }
-  }
+  },
 }
 </script>
 
