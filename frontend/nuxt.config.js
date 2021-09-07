@@ -88,7 +88,7 @@ export default {
     },
 
     '/txt-api/': {
-      target: 'https://bmf-dev.txtwerk.de/rest/txt/analyzer',
+      target: 'XXX',
       pathRewrite: {'^/txt-api/': ''}
     }
   },

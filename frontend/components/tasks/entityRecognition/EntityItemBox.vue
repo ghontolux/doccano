@@ -223,9 +223,7 @@ export default {
                 headers: {
                   "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
                   "X-Api-Key": "XXX",
-                  // "Access-Control-Allow-Origin": "https://bmf-dev.txtwerk.de",
                   "Access-Control-Request-Headers": "X-Api-Key",
-                  // "Access-Control-Request-Method": "POST"
                 },
                 method: "POST"
             }
