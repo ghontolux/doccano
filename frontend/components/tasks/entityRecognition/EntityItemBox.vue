@@ -22,30 +22,28 @@
           offset-y
       >
         <v-card>
-      <v-card-text>
         <v-autocomplete
             v-model="model"
             :items="items"
             :loading="isLoading"
             :search-input.sync="search"
-            color="white"
-            hide-no-data
+            color="grey"
             hide-selected
+            no-filter
             item-text="Description"
             item-value="API"
-            label="Public APIs"
+            label="Entity ID"
             placeholder="Entity Surface"
             prepend-icon="mdi-database-search"
             return-object
             autofocus
             @focus="setSearchVal"
         ></v-autocomplete>
-      </v-card-text>
       <v-divider></v-divider>
       <v-expand-transition>
         <v-list
           v-if="model"
-          class="red lighten-4"
+          class="cyan lighten-5"
         >
           <v-list-item
             v-for="(field, i) in fields"
@@ -62,7 +60,7 @@
         <v-spacer></v-spacer>
         <v-btn
           :disabled="!model"
-          color="grey darken-3"
+          color="red lighten-4"
           @click="model = null"
         >
           Clear
@@ -83,7 +81,7 @@
           <v-btn
             color="primary"
             text
-            @click="onSubmit(entInput)"
+            @click="onSubmit()"
           >
             Save
           </v-btn>
@@ -196,11 +194,14 @@ export default {
       })
     },
     items() {
+      console.log("++++++++++++")
+      console.log(this.entries)
       return this.entries.map(entry => {
         const Description = entry.label.length > this.descriptionLimit
           ? entry.label.slice(0, this.descriptionLimit) + '...'
           : entry.label
-
+        console.log(Description)
+        console.log(entry)
         return Object.assign({}, entry, { Description })
       })
     },
@@ -208,47 +209,26 @@ export default {
 
   watch: {
       search(val) {
+
+        // if the search value is empty
+        if (val === undefined || val === null || val.length === 0) {
+        // make dataList empty
+          this.makeDataListEmpty();
+          this.isloading = false;
+          return;
+        }
+
         // Items have already been loaded
         // if (this.items.length > 0) return
         // Items have already been requested
+        console.log("************")
+        console.log(val)
+        console.log(this.isLoading)
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
         const call_txt = "text=" + val + "&nerFormat=candidates&services=entities"
-        fetch(
-            // 'https://api.publicapis.org/entries'
-            "/txt-api/", 
-            {
-                body: call_txt,
-                headers: {
-                  "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                  "X-Api-Key": "XXX",
-                  "Access-Control-Request-Headers": "X-Api-Key",
-                },
-                method: "POST"
-            }
-          )
-          .then(res => res.json())
-          .then(res => {
-            if (
-                    Array.isArray(res.entities) &&
-                    res.entities.length && 
-                    Object.prototype.hasOwnProperty.call(res.entities[0], "candidates")){
-                const entries = res.entities[0].candidates
-                const count = entries.length
-                this.count = count
-                this.entries = entries
-            }
-            else {
-                this.count = 0
-                this.entries = []
-            }
-            console.log(this.entries)
-          })
-          .catch(err => {
-            console.log(err)
-          })
-          .finally(() => (this.isLoading = false))
+        this.fetchTxtEnts(call_txt)
       },
     },
 
@@ -349,9 +329,11 @@ export default {
       }
     },
 
-    assignLabel(entInput) {
+    assignLabel() {
+      console.log("===== model =====")
+      console.log(this.model)
       if (this.validateSpan()) {
-        this.addEntity(this.start, this.end, entInput)
+        this.addEntity(this.start, this.end, this.model.uri)
         this.showMenu = false
         this.start = 0
         this.end = 0
@@ -360,18 +342,69 @@ export default {
 
     onCancel(){
       this.showMenu = false;
-      this.entInput = "";
+      this.search = "";
     },
     
-    onSubmit(entInput){
-      this.assignLabel(entInput)
+    onSubmit(){
+      if (this.model){
+        this.assignLabel(this.model.url)
+      }
+      // this.assignLabel(entInput)
+      console.log("===== model =====")
+      console.log(this.model)
+      console.log("===== search =====")
+      console.log(this.search)
+      console.log("===== fields =====")
+      console.log(this.fields)
+      console.log("===== entries =====")
+      console.log(this.entries)
       this.showMenu = false;
       this.entInput = "";
     },
 
     setSearchVal(){
       this.search = this.text.slice(this.start, this.end)
+      this.model = null
+    },
+
+    makeDataListEmpty(){
       this.entries = []
+    },
+
+    fetchTxtEnts(call_txt){
+      fetch(
+              "/txt-api/", 
+              {
+                  body: call_txt,
+                  headers: {
+                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
+                    "X-Api-Key": "XXX",
+                    "Access-Control-Request-Headers": "X-Api-Key",
+                  },
+                  method: "POST"
+              }
+            )
+            .then(res => res.json())
+            .then(res => {
+              if (
+                      Array.isArray(res.entities) &&
+                      res.entities.length && 
+                      Object.prototype.hasOwnProperty.call(res.entities[0], "candidates")){
+                  const entries = res.entities[0].candidates
+                  const count = entries.length
+                  this.count = count
+                  this.entries = entries
+              }
+              else {
+                  this.count = 0
+                  this.entries = []
+              }
+              console.log(this.entries)
+            })
+            .catch(err => {
+              console.log(err)
+            })
+            .finally(() => (this.isLoading = false))
     }
   },
 }
@@ -394,6 +427,10 @@ export default {
 
 .highlight-container.highlight-container--bottom-labels .highlight.bottom {
   margin-top: 6px;
+}
+
+.v-autocomplete:not(.v-input--is-focused).v-select--chips input {
+   max-height: 25px !important; 
 }
 
 #connections-wrapper {
