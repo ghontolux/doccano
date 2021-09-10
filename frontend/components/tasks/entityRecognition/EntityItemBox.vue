@@ -28,9 +28,10 @@
             :loading="isLoading"
             :search-input.sync="search"
             color="grey"
+            filled
             hide-selected
             no-filter
-            item-text="Description"
+            item-text="uri"
             item-value="API"
             label="Entity ID"
             placeholder="Entity Surface"
@@ -38,7 +39,12 @@
             return-object
             autofocus
             @focus="setSearchVal"
-        ></v-autocomplete>
+        >
+          <template v-slot:item="data">
+            <v-list-item-title style="white-space: pre-wrap;" v-text="data.item.label"></v-list-item-title>
+            <v-list-item-subtitle v-text="data.item.type"></v-list-item-subtitle>
+          </template>
+        </v-autocomplete>
       <v-divider></v-divider>
       <v-expand-transition>
         <v-list
@@ -194,14 +200,10 @@ export default {
       })
     },
     items() {
-      console.log("++++++++++++")
-      console.log(this.entries)
       return this.entries.map(entry => {
         const Description = entry.label.length > this.descriptionLimit
           ? entry.label.slice(0, this.descriptionLimit) + '...'
           : entry.label
-        console.log(Description)
-        console.log(entry)
         return Object.assign({}, entry, { Description })
       })
     },
@@ -209,7 +211,6 @@ export default {
 
   watch: {
       search(val) {
-
         // if the search value is empty
         if (val === undefined || val === null || val.length === 0) {
         // make dataList empty
@@ -221,13 +222,10 @@ export default {
         // Items have already been loaded
         // if (this.items.length > 0) return
         // Items have already been requested
-        console.log("************")
-        console.log(val)
-        console.log(this.isLoading)
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
-        const call_txt = "text=" + val + "&nerFormat=candidates&services=entities"
+        const call_txt = "/txt-lexicon?sf=" + val + "&includeTypes="
         this.fetchTxtEnts(call_txt)
       },
     },
@@ -330,8 +328,6 @@ export default {
     },
 
     assignLabel() {
-      console.log("===== model =====")
-      console.log(this.model)
       if (this.validateSpan()) {
         this.addEntity(this.start, this.end, this.model.uri)
         this.showMenu = false
@@ -349,15 +345,6 @@ export default {
       if (this.model){
         this.assignLabel(this.model.url)
       }
-      // this.assignLabel(entInput)
-      console.log("===== model =====")
-      console.log(this.model)
-      console.log("===== search =====")
-      console.log(this.search)
-      console.log("===== fields =====")
-      console.log(this.fields)
-      console.log("===== entries =====")
-      console.log(this.entries)
       this.showMenu = false;
       this.entInput = "";
     },
@@ -373,24 +360,24 @@ export default {
 
     fetchTxtEnts(call_txt){
       fetch(
-              "/txt-api/", 
-              {
-                  body: call_txt,
-                  headers: {
-                    "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-                    "X-Api-Key": "XXX",
-                    "Access-Control-Request-Headers": "X-Api-Key",
-                  },
-                  method: "POST"
+              call_txt, {
+              headers: {
+                "X-Api-Key": "XXX",
               }
-            )
+            })
             .then(res => res.json())
             .then(res => {
+              const entries = [].concat.apply([], res.map(lexicon => {
+                return lexicon.results.map(lexEntry => {
+                    lexEntry.lexicon = lexicon.lexicon
+                    return lexEntry
+                  })
+                }
+              ))
               if (
-                      Array.isArray(res.entities) &&
-                      res.entities.length && 
-                      Object.prototype.hasOwnProperty.call(res.entities[0], "candidates")){
-                  const entries = res.entities[0].candidates
+                      Array.isArray(entries) &&
+                      entries.length)
+              {
                   const count = entries.length
                   this.count = count
                   this.entries = entries
@@ -399,7 +386,6 @@ export default {
                   this.count = 0
                   this.entries = []
               }
-              console.log(this.entries)
             })
             .catch(err => {
               console.log(err)

@@ -89,7 +89,17 @@ export default {
 
     '/txt-api/': {
       target: 'XXX',
-      pathRewrite: {'^/txt-api/': ''}
+      pathRewrite: {'^/txt-api/': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key"
+      }
+    },
+    '/txt-lexicon': {
+      target: 'XXX',
+      pathRewrite: {'^/txt-lexicon': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key"
+      }
     }
   },
   /*
