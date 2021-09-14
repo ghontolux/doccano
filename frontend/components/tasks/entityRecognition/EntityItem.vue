@@ -7,7 +7,7 @@
     <template v-slot:activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
         <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span></span><span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label"/>
+          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(label)">
       </span>
     </template>
   </v-menu>
@@ -50,7 +50,15 @@ export default {
   data() {
     return {
       showMenu: false,
-      activeMenu: false
+      activeMenu: false,
+      urlPattern: RegExp(
+        '^(https?:\\/\\/)?'+ // protocol
+        '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
+        '((\\d{1,3}\\.){3}\\d{1,3}))'+ // OR ip (v4) address
+        '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
+        '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
+        '(\\#[-a-z\\d_]*)?$','i' // fragment locator
+      )
     }
   },
 
@@ -74,6 +82,12 @@ export default {
       this.showMenu = false;
       this.activeMenu = false;
     },
+
+    openEntLink(url){
+      if(this.urlPattern.test(url)){
+        window.open(url)
+      }
+    }
   }
 }
 </script>
