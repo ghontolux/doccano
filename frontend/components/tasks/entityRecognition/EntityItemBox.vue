@@ -225,7 +225,7 @@ export default {
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
-        const call_txt = "/txt-lexicon?sf=" + val + "&includeTypes="
+        const call_txt = "/txt-lexicon&sf=" + val + "&includeTypes="
         this.fetchTxtEnts(call_txt)
       },
     },
@@ -266,6 +266,8 @@ export default {
         text: snippets.slice(-1)[0],
         newline: false
       })
+      console.log("#########")
+      console.log(chunks)
       return chunks
     },
 
@@ -361,9 +363,7 @@ export default {
     fetchTxtEnts(call_txt){
       fetch(
               call_txt, {
-              headers: {
-                "X-Api-Key": "XXX",
-              }
+              headers: {}
             })
             .then(res => res.json())
             .then(res => {

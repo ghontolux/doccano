@@ -88,17 +88,19 @@ export default {
     },
 
     '/txt-api/': {
-      target: 'XXX',
+      target: process.env.TXTWERK_API,
       pathRewrite: {'^/txt-api/': ''},
       headers: {
-        "Access-Control-Request-Headers": "X-Api-Key"
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
       }
     },
     '/txt-lexicon': {
-      target: 'XXX',
+      target: process.env.TXTWERK_LEXICON_PATH,
       pathRewrite: {'^/txt-lexicon': ''},
       headers: {
-        "Access-Control-Request-Headers": "X-Api-Key"
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
       }
     }
   },
