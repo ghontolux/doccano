@@ -56,6 +56,10 @@ services:
     environment:
       API_URL: "http://backend:8000"
       GOOGLE_TRACKING_ID: ""
+      TXTWERK_LEXICON_PATH: "${TXTWERK_LEXICON_PATH}"
+      TXTWERK_API: "${TXTWERK_API}"
+      TXTWWERK_API_KEY: "${TXTWWERK_API_KEY}"
+    restart: always
     volumes:
       - static_volume:/static
       - media:/media
