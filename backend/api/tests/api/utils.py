@@ -9,7 +9,8 @@ from rest_framework import status
 from rest_framework.test import APITestCase
 
 from ...models import (DOCUMENT_CLASSIFICATION, IMAGE_CLASSIFICATION, SEQ2SEQ,
-                       SEQUENCE_LABELING, SPEECH2TEXT, Role, RoleMapping)
+                       SEQUENCE_LABELING, SPEECH2TEXT, ENTITY_RECOGNITION, 
+                       Role, RoleMapping)
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), '../data')
 
@@ -62,7 +63,8 @@ def make_project(
         SEQUENCE_LABELING: 'SequenceLabelingProject',
         SEQ2SEQ: 'Seq2seqProject',
         SPEECH2TEXT: 'Speech2TextProject',
-        IMAGE_CLASSIFICATION: 'ImageClassificationProject'
+        IMAGE_CLASSIFICATION: 'ImageClassificationProject',
+        ENTITY_RECOGNITION: 'EntityRecognitionProject',
     }.get(task, 'Project')
     project = mommy.make(
         _model=project_model,
@@ -114,7 +116,8 @@ def make_annotation(task, doc, user):
         DOCUMENT_CLASSIFICATION: 'Category',
         SEQUENCE_LABELING: 'Span',
         SEQ2SEQ: 'TextLabel',
-        SPEECH2TEXT: 'TextLabel'
+        SPEECH2TEXT: 'TextLabel',
+        ENTITY_RECOGNITION: 'EntitySpan'
     }.get(task)
     return mommy.make(annotation_model, example=doc, user=user)
 

@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
-from .models import Example, Label, Project
+from .models import Example, Label, Project, EntitySpan
 from .views.download.factory import create_repository, create_writer
 from .views.download.service import ExportApplicationService
 from .views.upload.exception import FileParseException
@@ -99,6 +99,7 @@ def injest_data(user_id, project_id, filenames, format: str, **kwargs):
         data_class=get_data_class(project.project_type),
         **kwargs
     )
+
     it = iter(dataset)
     buffer = Buffer()
     factory = DataFactory(

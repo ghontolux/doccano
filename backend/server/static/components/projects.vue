@@ -41,6 +41,7 @@
                 option(value="SequenceLabeling") sequence labeling
                 option(value="Seq2seq") sequence to sequence
                 option(value="Speech2text") speech to text
+                option(value="EntityRecognition") entity recognition
             p.help.is-danger {{ projectTypeError }}
 
           div.field
@@ -108,6 +109,7 @@
                         option Sequence Labeling
                         option Seq2seq
                         option Speech to text
+                        option Entity Recognition
 
               div.card-table
                 div.content
@@ -217,6 +219,9 @@ export default {
       if (projectType === 'Speech2text') {
         return this.selected === 'Speech to text';
       }
+      if (projectType === 'EntityRecognition'){
+        return this.selected === 'Entity Recognition';
+      }
       return false;
     },
 
@@ -263,6 +268,9 @@ export default {
       }
       if (this.projectType === 'Speech2text') {
         return 'Speech2textProject';
+      }
+      if (this.projectType === 'EntityRecognition'){
+        return 'EntityRecognitionProject';
       }
       return '';
     },

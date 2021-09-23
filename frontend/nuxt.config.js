@@ -85,6 +85,23 @@ export default {
     // Use a fake value for use at build-time
     '/v1/': {
       target: process.env.API_URL || 'http://127.0.0.1:8000'
+    },
+
+    '/txt-api/': {
+      target: process.env.TXTWERK_API,
+      pathRewrite: {'^/txt-api/': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+      }
+    },
+    '/txt-lexicon': {
+      target: process.env.TXTWERK_LEXICON_PATH,
+      pathRewrite: {'^/txt-lexicon': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+      }
     }
   },
   /*

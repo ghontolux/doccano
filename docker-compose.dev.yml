@@ -58,6 +58,9 @@ services:
     working_dir: /src/frontend
     environment:
       API_URL: "http://backend:8000"
+      TXTWERK_LEXICON_PATH: "${TXTWERK_LEXICON_PATH}"
+      TXTWERK_API: "${TXTWERK_API}"
+      TXTWWERK_API_KEY: "${TXTWWERK_API_KEY}"
     volumes:
       - .:/src
       - node_modules:/src/frontend/node_modules
