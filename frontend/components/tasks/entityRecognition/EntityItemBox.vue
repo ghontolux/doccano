@@ -244,19 +244,52 @@ export default {
 
   methods: {
     makeChunks(text) {
+      console.log("=========")
+      console.log(text)
+      console.log("=========")
       const chunks = []
       const snippets = text.split('\n')
       for (const snippet of snippets.slice(0, -1)) {
+        console.log("________")
+        console.log(snippet)     
+                  
+        let partLength = 0
+        const partToken = []
+        if (snippet.length >= 30){
+          const snippetParts = snippet.split(" ")
+          for (const part of snippetParts){
+            partToken.push(part)
+            partLength += part.length
+            if (partLength >= 30){
+              chunks.push({
+                label: null,
+                color: null,
+                text: partToken.join(" ") + " ",
+                newline: false
+              })
+              partLength = 0
+              partToken.length = 0
+            }
+          }
+          chunks.push({
+                label: null,
+                color: null,
+                text: partToken.join(" "),
+                newline: false
+            })
+        }
+        else {
+          chunks.push({
+                label: null,
+                color: null,
+                text: snippet,
+                newline: false
+            })
+        }
         chunks.push({
           label: null,
           color: null,
-          text: snippet + '\n',
-          newline: false
-        })
-        chunks.push({
-          label: null,
-          color: null,
-          text: '',
+          text: '\n',
           newline: true
         })
       }
