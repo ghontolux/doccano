@@ -289,7 +289,7 @@ export default {
         chunks.push({
           label: null,
           color: null,
-          text: '\n',
+          text: '',
           newline: true
         })
       }
@@ -384,7 +384,7 @@ export default {
     },
 
     setSearchVal(){
-      this.search = this.text.slice(this.start-1, this.end)
+      this.search = this.text.slice(this.start, this.end)
       this.model = null
     },
 
