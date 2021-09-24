@@ -183,7 +183,8 @@ export default {
       }
       // add the rest of text.
       chunks = chunks.concat(this.makeChunks(characters.slice(startOffset, characters.length).join('')));
-
+      console.log("############")
+      console.log(chunks)
 
       return chunks;
     },
@@ -244,15 +245,14 @@ export default {
 
   methods: {
     makeChunks(text) {
-      console.log("=========")
-      console.log(text)
-      console.log("=========")
       const chunks = []
+      if (text === ""){
+        return chunks
+      }
+      console.log("#######")
+      console.log(text)
       const snippets = text.split('\n')
-      for (const snippet of snippets.slice(0, -1)) {
-        console.log("________")
-        console.log(snippet)     
-                  
+      for (const snippet of snippets) {   
         let partLength = 0
         const partToken = []
         if (snippet.length >= 30){
@@ -293,14 +293,13 @@ export default {
           newline: true
         })
       }
+      /*
       chunks.push({
         label: null,
         color: null,
         text: snippets.slice(-1)[0],
         newline: false
-      })
-      console.log("#########")
-      console.log(chunks)
+      }) */
       return chunks
     },
 
