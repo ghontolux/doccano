@@ -384,7 +384,7 @@ export default {
     },
 
     setSearchVal(){
-      this.search = this.text.slice(this.start, this.end)
+      this.search = this.text.slice(this.start-1, this.end)
       this.model = null
     },
 
