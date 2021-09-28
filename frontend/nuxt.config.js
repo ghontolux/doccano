@@ -101,6 +101,7 @@ export default {
       headers: {
         "Access-Control-Request-Headers": "X-Api-Key",
         "X-Api-Key": process.env.TXTWWERK_API_KEY,
+        "Authorization": "Basic " + process.env.SERVER_AUTH
       }
     }
   },

@@ -59,6 +59,7 @@ services:
       TXTWERK_LEXICON_PATH: "${TXTWERK_LEXICON_PATH}"
       TXTWERK_API: "${TXTWERK_API}"
       TXTWWERK_API_KEY: "${TXTWWERK_API_KEY}"
+      SERVER_AUTH: "${SERVER_AUTH}"
     restart: always
     volumes:
       - static_volume:/static

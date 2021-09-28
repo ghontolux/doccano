@@ -61,6 +61,7 @@ services:
       TXTWERK_LEXICON_PATH: "${TXTWERK_LEXICON_PATH}"
       TXTWERK_API: "${TXTWERK_API}"
       TXTWWERK_API_KEY: "${TXTWWERK_API_KEY}"
+      SERVER_AUTH: "${SERVER_AUTH}"
     volumes:
       - .:/src
       - node_modules:/src/frontend/node_modules
