@@ -243,14 +243,8 @@ export default {
   },
 
   methods: {
-    makeChunks(text) {
-      const chunks = []
-      const snippets = text.split("\n")
-      const maxSnippetLength = 30
-
-      for (const [i, snippet] of snippets.entries()) {
-        if (snippet.length >= maxSnippetLength){
-          const parts = snippet.split(" ")
+    splitSnippet(snippet, chunks, maxSnippetLength){
+      const parts = snippet.split(" ")
           const tokens = []
           let partLength = 0
           let splitCount = 0
@@ -273,6 +267,16 @@ export default {
               splitCount += 1
             }
           }
+    },
+
+    makeChunks(text) {
+      const chunks = []
+      const snippets = text.split("\n")
+      const maxSnippetLength = 30
+
+      for (const [i, snippet] of snippets.entries()) {
+        if (snippet.length >= maxSnippetLength){
+          this.splitSnippet(snippet, chunks, maxSnippetLength)
         } else {
             chunks.push({
               label: null,
