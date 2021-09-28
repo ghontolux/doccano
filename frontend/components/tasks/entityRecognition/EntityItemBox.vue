@@ -432,7 +432,7 @@ export default {
   line-height: 70px !important;
   display: flex;
   flex-wrap: wrap;
-  white-space: pre-wrap;
+  white-space: pre;
   cursor: default;
   position: relative;
   z-index: 1;
