@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { chunk } from 'lodash'
 import EntityItem from './EntityItem'
 
 export default {
@@ -184,7 +185,6 @@ export default {
       // add the rest of text.
       chunks = chunks.concat(this.makeChunks(characters.slice(startOffset, characters.length).join('')));
 
-
       return chunks;
     },
 
@@ -243,31 +243,62 @@ export default {
   },
 
   methods: {
+    splitSnippet(snippet, chunks, maxSnippetLength){
+      const parts = snippet.split(" ")
+          const tokens = []
+          let partLength = 0
+          let splitCount = 0
+          for (const [j, part] of parts.entries()){
+            tokens.push(part)
+            partLength += part.length
+            if (partLength >= maxSnippetLength || j === parts.length - 1){
+              let words = tokens.join(" ")
+              if (splitCount > 0){
+                words = " " + words
+              }
+              chunks.push({
+                label: null,
+                color: null,
+                text: words,
+                newline: false
+              })
+              tokens.length = 0
+              partLength = 0
+              splitCount += 1
+            }
+          }
+    },
+
     makeChunks(text) {
       const chunks = []
-      const snippets = text.split('\n')
-      for (const snippet of snippets.slice(0, -1)) {
-        chunks.push({
-          label: null,
-          color: null,
-          text: snippet + '\n',
-          newline: false
-        })
-        chunks.push({
-          label: null,
-          color: null,
-          text: '',
-          newline: true
-        })
+      const snippets = text.split("\n")
+      const maxSnippetLength = 30
+
+      for (const [i, snippet] of snippets.entries()) {
+        if (snippet.length >= maxSnippetLength){
+          this.splitSnippet(snippet, chunks, maxSnippetLength)
+        } else {
+            chunks.push({
+              label: null,
+              color: null,
+              text: snippet,
+              newline: false
+            })
+        }
+
+        if (i !== snippets.length  - 1){
+          chunks[chunks.length - 1].text += "\n"
+          chunks.push({
+              label: null,
+              color: null,
+              text: '',
+              newline: true
+          })
+        }
+
+        
       }
-      chunks.push({
-        label: null,
-        color: null,
-        text: snippets.slice(-1)[0],
-        newline: false
-      })
-      console.log("#########")
-      console.log(chunks)
+
       return chunks
     },
 
@@ -405,7 +436,7 @@ export default {
   line-height: 70px !important;
   display: flex;
   flex-wrap: wrap;
-  white-space: pre-wrap;
+  white-space: pre;
   cursor: default;
   position: relative;
   z-index: 1;
