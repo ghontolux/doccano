@@ -103,6 +103,7 @@
 </template>
 
 <script>
+import { chunk } from 'lodash'
 import EntityItem from './EntityItem'
 
 export default {
@@ -183,8 +184,6 @@ export default {
       }
       // add the rest of text.
       chunks = chunks.concat(this.makeChunks(characters.slice(startOffset, characters.length).join('')));
-      console.log("############")
-      console.log(chunks)
 
       return chunks;
     },
@@ -246,60 +245,56 @@ export default {
   methods: {
     makeChunks(text) {
       const chunks = []
-      if (text === ""){
-        return chunks
-      }
-      console.log("#######")
-      console.log(text)
-      const snippets = text.split('\n')
-      for (const snippet of snippets) {   
-        let partLength = 0
-        const partToken = []
-        if (snippet.length >= 30){
-          const snippetParts = snippet.split(" ")
-          for (const part of snippetParts){
-            partToken.push(part)
+      const snippets = text.split("\n")
+      const maxSnippetLength = 30
+
+      for (const [i, snippet] of snippets.entries()) {
+        if (snippet.length >= maxSnippetLength){
+          const parts = snippet.split(" ")
+          const tokens = []
+          let partLength = 0
+          let splitCount = 0
+          for (const [j, part] of parts.entries()){
+            tokens.push(part)
             partLength += part.length
-            if (partLength >= 30){
+            if (partLength >= maxSnippetLength || j === parts.length - 1){
+              let words = tokens.join(" ")
+              if (splitCount > 0){
+                words = " " + words
+              }
               chunks.push({
                 label: null,
                 color: null,
-                text: partToken.join(" ") + " ",
+                text: words,
                 newline: false
               })
+              tokens.length = 0
               partLength = 0
-              partToken.length = 0
+              splitCount += 1
             }
           }
-          chunks.push({
-                label: null,
-                color: null,
-                text: partToken.join(" "),
-                newline: false
+        } else {
+            chunks.push({
+              label: null,
+              color: null,
+              text: snippet,
+              newline: false
             })
         }
-        else {
+
+        if (i !== snippets.length  - 1){
+          chunks[chunks.length - 1].text += "\n"
           chunks.push({
-                label: null,
-                color: null,
-                text: snippet,
-                newline: false
-            })
+              label: null,
+              color: null,
+              text: '',
+              newline: true
+          })
         }
-        chunks.push({
-          label: null,
-          color: null,
-          text: '',
-          newline: true
-        })
+
+        
       }
-      /*
-      chunks.push({
-        label: null,
-        color: null,
-        text: snippets.slice(-1)[0],
-        newline: false
-      }) */
+
       return chunks
     },
 
