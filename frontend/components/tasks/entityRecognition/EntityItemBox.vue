@@ -225,7 +225,7 @@ export default {
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
-        const call_txt = "/txt-lexicon&sf=" + val + "&includeTypes="
+        const call_txt = "/txt-lexicon&sf=" + val
         this.fetchTxtEnts(call_txt)
       },
     },
