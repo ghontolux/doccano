@@ -2,6 +2,8 @@ version: "3.7"
 services:
 
   backend:
+    restart: unless-stopped
+    container_name: doccano_backend
     build:
       context: .
       dockerfile: backend/Dockerfile.prod
@@ -23,6 +25,8 @@ services:
       - network-frontend
 
   celery:
+    restart: unless-stopped
+    container_name: doccano_celery
     build:
       context: .
       dockerfile: backend/Dockerfile.prod
@@ -41,6 +45,8 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8
+    restart: unless-stopped
+    container_name: doccano_rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS}"
@@ -60,7 +66,8 @@ services:
       TXTWERK_API: "${TXTWERK_API}"
       TXTWWERK_API_KEY: "${TXTWWERK_API_KEY}"
       SERVER_AUTH: "${SERVER_AUTH}"
-    restart: always
+    restart: unless-stopped
+    container_name: doccano_nginx
     volumes:
       - static_volume:/static
       - media:/media
@@ -73,6 +80,8 @@ services:
       - network-frontend
 
   postgres:
+    restart: unless-stopped
+    container_name: doccano_postgres
     image: postgres:13.1-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
