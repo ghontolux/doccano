@@ -21,6 +21,8 @@ export class ProjectReadItem {
     public collaborative_annotation:    boolean,
     public single_class_classification: boolean,
     public resourcetype:                string,
+    public allow_overlapping:           boolean,
+    public grapheme_mode:               boolean,
     public tags:                        Object[],
   ) {}
 
@@ -38,6 +40,8 @@ export class ProjectReadItem {
       collaborative_annotation,
       single_class_classification,
       resourcetype,
+      allow_overlapping,
+      grapheme_mode,
       tags
     }:
     {
@@ -53,6 +57,8 @@ export class ProjectReadItem {
       collaborative_annotation:    boolean,
       single_class_classification: boolean,
       resourcetype:                string,
+      allow_overlapping:           boolean,
+      grapheme_mode:               boolean,
       tags:                        Object[]
     }
   ): ProjectReadItem {
@@ -69,6 +75,8 @@ export class ProjectReadItem {
       collaborative_annotation,
       single_class_classification,
       resourcetype,
+      allow_overlapping,
+      grapheme_mode,
       tags
     )
   }
@@ -84,11 +92,6 @@ export class ProjectReadItem {
     }
     const url = `/projects/${this.id}/${mapping[this.project_type]}`
     return url
-  }
-
-  get permitApprove(): Boolean {
-    const role = this.current_users_role
-    return role && !role.is_annotator
   }
 
   get canDefineLabel() {
@@ -131,6 +134,8 @@ export class ProjectReadItem {
       collaborative_annotation: this.collaborative_annotation,
       single_class_classification: this.single_class_classification,
       resourcetype: this.resourcetype,
+      allow_overlapping: this.allow_overlapping,
+      grapheme_mode: this.grapheme_mode,
       tags: this.tags
     }
   }
@@ -145,7 +150,9 @@ export class ProjectWriteItem {
     public project_type:                ProjectType,
     public random_order:                boolean,
     public collaborative_annotation:    boolean,
-    public single_class_classification: boolean
+    public single_class_classification: boolean,
+    public allow_overlapping:           boolean,
+    public grapheme_mode:               boolean
   ) {}
 
   static valueOf(
@@ -157,7 +164,9 @@ export class ProjectWriteItem {
       project_type,
       random_order,
       collaborative_annotation,
-      single_class_classification
+      single_class_classification,
+      allow_overlapping,
+      grapheme_mode
     }:
     {
       id:                          number,
@@ -167,7 +176,9 @@ export class ProjectWriteItem {
       project_type:                ProjectType,
       random_order:                boolean,
       collaborative_annotation:    boolean,
-      single_class_classification: boolean
+      single_class_classification: boolean,
+      allow_overlapping:           boolean,
+      grapheme_mode:               boolean
     }
   ): ProjectWriteItem {
     return new ProjectWriteItem(
@@ -178,7 +189,9 @@ export class ProjectWriteItem {
       project_type,
       random_order,
       collaborative_annotation,
-      single_class_classification
+      single_class_classification,
+      allow_overlapping,
+      grapheme_mode
     )
   }
 
@@ -204,6 +217,8 @@ export class ProjectWriteItem {
       random_order: this.random_order,
       collaborative_annotation: this.collaborative_annotation,
       single_class_classification: this.single_class_classification,
+      allow_overlapping: this.allow_overlapping,
+      grapheme_mode: this.grapheme_mode,
       resourcetype: this.resourceType
     }
   }

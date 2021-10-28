@@ -44,9 +44,9 @@ services:
       - network-backend
 
   rabbitmq:
-    image: rabbitmq:3.8
     restart: unless-stopped
     container_name: doccano_rabbitmq
+    image: rabbitmq:3.8-alpine
     environment:
       RABBITMQ_DEFAULT_USER: "${RABBITMQ_DEFAULT_USER}"
       RABBITMQ_DEFAULT_PASS: "${RABBITMQ_DEFAULT_PASS}"
@@ -82,7 +82,7 @@ services:
   postgres:
     restart: unless-stopped
     container_name: doccano_postgres
-    image: postgres:13.1-alpine
+    image: postgres:13.3-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
