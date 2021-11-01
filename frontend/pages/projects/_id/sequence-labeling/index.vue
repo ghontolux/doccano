@@ -77,8 +77,6 @@ export default {
       project: {},
       enableAutoLabeling: false,
       rtl: false,
-<<<<<<< HEAD
-=======
     }
   },
 
@@ -92,7 +90,6 @@ export default {
     const doc = this.docs.items[0]
     if (this.enableAutoLabeling) {
       await this.autoLabel(doc.id)
->>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
     }
     await this.list(doc.id)
   },
@@ -171,13 +168,6 @@ export default {
       await this.$services.example.confirm(this.projectId, this.doc.id)
       await this.$fetch()
     },
-<<<<<<< HEAD
-  },
-
-  validate({ params, query }) {
-    return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
-=======
->>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
   }
 }
 </script>
