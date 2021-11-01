@@ -1,6 +1,6 @@
 <template>
   <layout-text v-if="doc.id">
-    <template v-slot:header>
+    <template #header>
       <toolbar-laptop
         :doc-id="doc.id"
         :enable-auto-labeling.sync="enableAutoLabeling"
@@ -17,7 +17,7 @@
         class="d-flex d-sm-none"
       />
     </template>
-    <template v-slot:content>
+    <template #content>
       <v-card>
         <v-card-text class="title">
           <entity-item-box
@@ -31,7 +31,7 @@
         </v-card-text>
       </v-card>
     </template>
-    <template v-slot:sidebar>
+    <template #sidebar>
       <list-metadata :metadata="doc.meta" />
     </template>
   </layout-text>
@@ -52,7 +52,6 @@ const NONE = {
 };
 
 export default {
-  layout: 'workspace',
 
   components: {
     EntityItemBox,
@@ -60,6 +59,17 @@ export default {
     ListMetadata,
     ToolbarLaptop,
     ToolbarMobile
+  },
+  layout: 'workspace',
+
+  data() {
+    return {
+      annotations: [],
+      docs: [],
+      labels: [],
+      project: {},
+      enableAutoLabeling: false,
+    }
   },
 
   async fetch() {
@@ -74,16 +84,6 @@ export default {
       await this.autoLabel(doc.id)
     }
     await this.list(doc.id)
-  },
-
-  data() {
-    return {
-      annotations: [],
-      docs: [],
-      labels: [],
-      project: {},
-      enableAutoLabeling: false,
-    }
   },
 
   computed: {

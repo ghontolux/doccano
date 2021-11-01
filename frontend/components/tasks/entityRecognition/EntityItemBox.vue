@@ -40,7 +40,7 @@
             autofocus
             @focus="setSearchVal"
         >
-          <template v-slot:item="data">
+          <template #item="data">
             <v-list-item-title style="white-space: pre-wrap;" v-text="data.item.label"></v-list-item-title>
             <v-list-item-subtitle v-text="data.item.type"></v-list-item-subtitle>
           </template>
