@@ -43,18 +43,8 @@ export default Vue.extend({
   },
   layout: 'project',
 
-<<<<<<< HEAD
-  async fetch() {
-    this.isLoading = true
-    this.project = await this.$services.project.findById(this.projectId)
-    this.items = await this.$services.comment.listProjectComment(this.projectId)
-    const example = await this.$services.example.fetchOne(this.projectId,'1','','') // to fetch the count of examples
-    this.examples = await this.$services.example.list(this.projectId, {limit: example.count.toString()})
-    this.isLoading = false
-=======
   validate({ params }) {
     return /^\d+$/.test(params.id)
->>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
   },
 
   data() {
