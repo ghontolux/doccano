@@ -1,6 +1,6 @@
 <template>
   <layout-text v-if="doc.id">
-    <template v-slot:header>
+    <template #header>
       <toolbar-laptop
         :doc-id="doc.id"
         :enable-auto-labeling.sync="enableAutoLabeling"
@@ -16,7 +16,7 @@
         class="d-flex d-sm-none"
       />
     </template>
-    <template v-slot:content>
+    <template #content>
       <v-card>
         <div class="annotation-text pa-4">
           <entity-editor
@@ -36,7 +36,7 @@
         </div>
       </v-card>
     </template>
-    <template v-slot:sidebar>
+    <template #sidebar>
       <list-metadata :metadata="doc.meta" />
     </template>
   </layout-text>
@@ -52,7 +52,6 @@ import ToolbarMobile from '@/components/tasks/toolbar/ToolbarMobile'
 import EntityEditor from '@/components/tasks/sequenceLabeling/EntityEditor.vue'
 
 export default {
-  layout: 'workspace',
 
   components: {
     EntityEditor,
@@ -62,18 +61,10 @@ export default {
     ToolbarMobile
   },
 
-  async fetch() {
-    this.docs = await this.$services.example.fetchOne(
-      this.projectId,
-      this.$route.query.page,
-      this.$route.query.q,
-      this.$route.query.isChecked
-    )
-    const doc = this.docs.items[0]
-    if (this.enableAutoLabeling) {
-      await this.autoLabel(doc.id)
-    }
-    await this.list(doc.id)
+  layout: 'workspace',
+
+  validate({ params, query }) {
+    return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
   },
 
   data() {
@@ -86,7 +77,24 @@ export default {
       project: {},
       enableAutoLabeling: false,
       rtl: false,
+<<<<<<< HEAD
+=======
     }
+  },
+
+  async fetch() {
+    this.docs = await this.$services.example.fetchOne(
+      this.projectId,
+      this.$route.query.page,
+      this.$route.query.q,
+      this.$route.query.isChecked
+    )
+    const doc = this.docs.items[0]
+    if (this.enableAutoLabeling) {
+      await this.autoLabel(doc.id)
+>>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
+    }
+    await this.list(doc.id)
   },
 
   computed: {
@@ -163,10 +171,13 @@ export default {
       await this.$services.example.confirm(this.projectId, this.doc.id)
       await this.$fetch()
     },
+<<<<<<< HEAD
   },
 
   validate({ params, query }) {
     return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
+=======
+>>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
   }
 }
 </script>

@@ -44,7 +44,7 @@
       open-on-hover
       offset-y
     >
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn
           text
           v-on="on"
@@ -74,7 +74,7 @@
       v-if="isAuthenticated"
       offset-y
     >
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn on icon v-on="on">
           <v-icon>mdi-dots-vertical</v-icon>
         </v-btn>
@@ -86,8 +86,13 @@
             <v-switch
               :input-value="isRTL"
               :label="direction"
+<<<<<<< HEAD
               @change="toggleRTL"
               class="ms-1"
+=======
+              class="ms-1"
+              @change="toggleRTL"
+>>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
             />
           </v-list-item-content>
         </v-list-item>
