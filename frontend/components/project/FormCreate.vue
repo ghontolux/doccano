@@ -66,19 +66,11 @@
           :value="graphemeMode"
           @change="updateValue('graphemeMode', $event === true)"
         >
-<<<<<<< HEAD
-          <template v-slot:label>
-            <div>
-              Count
-              <v-tooltip bottom>
-                <template v-slot:activator="{ on }">
-=======
           <template #label>
             <div>
               Count
               <v-tooltip bottom>
                 <template #activator="{ on }">
->>>>>>> 8754ae7484f0ec7a289bf3254d9cc87bc691160b
                   <a
                     target="_blank"
                     href="https://unicode.org/reports/tr29/"
