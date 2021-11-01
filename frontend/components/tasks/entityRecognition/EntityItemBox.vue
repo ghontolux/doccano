@@ -225,7 +225,13 @@ export default {
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
-        const call_txt = "/txt-lexicon&sf=" + val
+        console.log("==========")
+        console.log(val)
+        if (val.startsWith(val)){
+          console.log("############")
+          console.log(val)
+        }
+        const call_txt = "/txt-lexicon/typeahead&sf=" + val
         this.fetchTxtEnts(call_txt)
       },
     },
