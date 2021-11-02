@@ -7,7 +7,7 @@
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
         <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span></span><span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(label)">
+          :data-label="shownText" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(label)">
       </span>
     </template>
   </v-menu>
@@ -58,7 +58,8 @@ export default {
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i' // fragment locator
-      )
+      ),
+      shownText: ""
     }
   },
 
