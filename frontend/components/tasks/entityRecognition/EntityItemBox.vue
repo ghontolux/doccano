@@ -225,14 +225,15 @@ export default {
         if (this.isLoading) return
         this.isLoading = true
         // Lazily load input items
-        console.log("==========")
-        console.log(val)
-        if (val.startsWith(val)){
-          console.log("############")
-          console.log(val)
+        if (val.startsWith("https://")){
+          const uri_components = val.split("/")
+          const call_txt = "/txt-lexicon/entries/" + "wikidata/" + uri_components[uri_components.length - 1]
+          this.fetchTxtEnts(call_txt)
         }
-        const call_txt = "/txt-lexicon/typeahead&sf=" + val
-        this.fetchTxtEnts(call_txt)
+        else {
+          const call_txt = "/txt-lexicon/typeahead&sf=" + val
+          this.fetchTxtEnts(call_txt)
+        }
       },
     },
 
@@ -382,7 +383,7 @@ export default {
     
     onSubmit(){
       if (this.model){
-        this.assignLabel(this.model.url)
+        this.assignLabel()
       }
       this.showMenu = false;
       this.entInput = "";
@@ -404,13 +405,28 @@ export default {
             })
             .then(res => res.json())
             .then(res => {
-              const entries = [].concat.apply([], res.map(lexicon => {
-                return lexicon.results.map(lexEntry => {
-                    lexEntry.lexicon = lexicon.lexicon
-                    return lexEntry
-                  })
+              let entries = []
+              if (Array.isArray(res)){
+                entries = [].concat.apply([], res.map(lexicon => {
+                  return lexicon.results.map(lexEntry => {
+                      lexEntry.lexicon = lexicon.lexicon
+                      return lexEntry
+                    })
+                  }
+                ))
+              }
+              else if (typeof res === "object" && "entry" in res){
+                if (res.entry.surfaceForms.length >= 5){
+                  res.entry.surfaceForms = res.entry.surfaceForms.slice(0, 4)
                 }
-              ))
+                entries = [res.entry]
+              }
+              else {
+                console.log(
+                  "ERROR: could not parse lexicon data for lexicon response: \n" 
+                  + JSON.stringify(res)
+                )
+              }
               if (
                       Array.isArray(entries) &&
                       entries.length)
