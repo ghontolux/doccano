@@ -95,10 +95,20 @@ export default {
         "X-Api-Key": process.env.TXTWWERK_API_KEY,
       }
     },
-    '/txt-lexicon': {
-      target: process.env.TXTWERK_LEXICON_PATH,
-      pathRewrite: {'^/txt-lexicon': ''},
+    '/txt-lexicon/typeahead': {
+      target: process.env.TXTWERK_LEXICON_TYPEAHEAD_PATH,
+      pathRewrite: {'^/txt-lexicon/typeahead': ''},
       headers: {
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+        "Authorization": "Basic " + process.env.SERVER_AUTH
+      }
+    },
+    '/txt-lexicon/entries': {
+      target: process.env.TXTWERK_LEXICON_ENTRIES_PATH,
+      pathRewrite: {'^/txt-lexicon/entries': ''},
+      headers: {
+        "Accept": "application/json",
         "Access-Control-Request-Headers": "X-Api-Key",
         "X-Api-Key": process.env.TXTWWERK_API_KEY,
         "Authorization": "Basic " + process.env.SERVER_AUTH
