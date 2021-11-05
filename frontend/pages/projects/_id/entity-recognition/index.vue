@@ -62,6 +62,10 @@ export default {
   },
   layout: 'workspace',
 
+  validate({ params, query }) {
+    return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
+  },
+
   data() {
     return {
       annotations: [],
@@ -117,9 +121,27 @@ export default {
   methods: {
     async list(docId) {
 
+      const enrichedAnnotations = []
+
       const annotations = await this.$services.entityRecognition.list(this.projectId, docId);
 
-      this.annotations = annotations;
+      annotations.forEach(annotation => {
+        const uri_components = annotation.ent_id.split("/")
+        const call_txt = "/txt-lexicon/entries/" + "wikidata/" + uri_components[uri_components.length - 1]
+        fetch(
+                call_txt, {
+                headers: {}
+              })
+              .then(res => res.json())
+              .then(res => {
+                enrichedAnnotations.push(Object.assign(annotation, res.entry))
+              })
+              .catch(err => {
+                console.log(err)
+              })
+      });
+
+      this.annotations = enrichedAnnotations;
     },
 
     async remove(id) {
@@ -156,9 +178,5 @@ export default {
     },
 
   },
-
-  validate({ params, query }) {
-    return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
-  }
 }
 </script>
