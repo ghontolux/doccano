@@ -7,7 +7,7 @@
           :spanid="chunk.id"
           :content="chunk.text"
           :newline="chunk.newline"
-          :label="chunk.label"
+          :uri="chunk.uri"
           :color="defaultColor"
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
@@ -177,7 +177,7 @@ export default {
         piece = characters.slice(entity.startOffset, entity.endOffset).join('')
         chunks.push({
           id: entity.id,
-          label: entity.ent_id,
+          uri: entity.ent_id,
           color: this.defaultColor,
           text: piece,
         })

@@ -1,13 +1,13 @@
 <template>
   <v-menu
-      v-if="label && !activeMenu"
+      v-if="uri && !activeMenu"
       v-model="showMenu"
       offset-y
   >
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
         <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span></span><span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(label)">
+          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(laburiel)">
       </span>
     </template>
   </v-menu>
@@ -29,7 +29,7 @@ export default {
       default: '',
       required: true
     },
-    label: {
+    uri: {
       type: String,
       default: ''
     },
@@ -58,14 +58,15 @@ export default {
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i' // fragment locator
-      )
+      ),
+      label: " "
     }
   },
 
   computed: {
     textColor() {
       return idealColor(this.color)
-    }
+    },
   },
 
   methods: {
