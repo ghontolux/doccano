@@ -8,7 +8,14 @@
           :content="chunk.text"
           :newline="chunk.newline"
           :uri="chunk.uri"
-          :color="defaultColor"
+          :color="getLabelColor(chunk.type)"
+          :label="chunk.label"
+          :created="chunk.created"
+          :lastModified="chunk.lastModified"
+          :prominence="chunk.prominence"
+          :surfaceForms="chunk.surfaceForms"
+          :type="chunk.type"
+
           @remove="deleteAnnotation(chunk.id)"
           @update="updateEntity($event.id, chunk.id)"
       />
@@ -103,7 +110,6 @@
 </template>
 
 <script>
-import { chunk } from 'lodash'
 import EntityItem from './EntityItem'
 
 export default {
@@ -148,6 +154,16 @@ export default {
       end: 0,
       entInput: "",
       defaultColor: "#9CCC65",
+      colorMap: new Map(
+        [
+          ["CONCEPT",  "#00BCD4"],
+          ["WORK", "#EF5350"],
+          ["PERSON", "#D4E157"],
+          ["ORGANISATION", "#FFF59D"],
+          ["PLACE", "#E1F5FE"],
+          ["MISC", "#E1BEE7"]
+        ]
+      ),
 
       // Autocomplete
       descriptionLimit: 60,
@@ -177,9 +193,15 @@ export default {
         piece = characters.slice(entity.startOffset, entity.endOffset).join('')
         chunks.push({
           id: entity.id,
-          uri: entity.ent_id,
+          uri: entity.uri,
           color: this.defaultColor,
           text: piece,
+          label: entity.label,
+          created: entity.created,
+          lastModified: entity.lastModified,
+          prominence: entity.prominence,
+          surfaceForms: entity.surfaceForms,
+          type: entity.type
         })
       }
       // add the rest of text.
@@ -250,6 +272,13 @@ export default {
   },
 
   methods: {
+    getLabelColor(concept){
+      const labelColor = this.colorMap.get(concept)
+      if (typeof labelColor !== "undefined"){
+        return labelColor
+      }
+      else {return this.defaultColor}
+    },
     splitSnippet(snippet, chunks, maxSnippetLength){
       const parts = snippet.split(" ")
           const tokens = []

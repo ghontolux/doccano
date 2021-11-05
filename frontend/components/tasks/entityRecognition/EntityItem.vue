@@ -6,9 +6,12 @@
   >
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
-        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span></span><span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(laburiel)">
-      </span>
+        <span
+          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
+        </span>
+        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span
+          :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
+      </span></span>
     </template>
   </v-menu>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
@@ -40,11 +43,30 @@ export default {
     newline: {
       type: Boolean
     },
-    sourceChunk: {
-      type: Object,
-      default: () => {
-      }
+    label: {
+      type: String,
+      default: " "
     },
+    created: {
+      type: String,
+      default: ""
+    },
+    lastModified: {
+      type: String,
+      default: ""
+    },
+    prominence: {
+      type: Number,
+      default: 0
+    },
+    surfaceForms: {
+      type: Array,
+      default() {return []}
+    },
+    type: {
+      type: String,
+      default: ""
+    }
   },
 
   data() {
@@ -59,7 +81,6 @@ export default {
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i' // fragment locator
       ),
-      label: " "
     }
   },
 
@@ -67,6 +88,9 @@ export default {
     textColor() {
       return idealColor(this.color)
     },
+    labelField(){
+      return this.label + "\n" + this.type
+    }
   },
 
   methods: {
