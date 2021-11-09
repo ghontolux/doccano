@@ -6,11 +6,7 @@
   >
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
-        <span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
-        </span>
-        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span
-          :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
+        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)"></span><span :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
       </span></span>
     </template>
   </v-menu>
