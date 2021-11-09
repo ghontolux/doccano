@@ -1,14 +1,72 @@
 <template>
   <v-menu
-      v-if="uri && !activeMenu"
+      v-if="uri"
       v-model="showMenu"
       offset-y
   >
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
-        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)"></span><span :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(uri)">
+        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label"></span><span :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label">
       </span></span>
     </template>
+    <v-list>
+      <v-subheader>Details</v-subheader>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{content}}</v-list-item-title>
+          <v-list-item-subtitle>content</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{label}}</v-list-item-title>
+          <v-list-item-subtitle>label</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{type}}</v-list-item-title>
+          <v-list-item-subtitle>type</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title selectable=true @click="openEntLink(uri)">{{uri}}</v-list-item-title>
+          <v-list-item-subtitle>uri</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{prominence}}</v-list-item-title>
+          <v-list-item-subtitle>prominence</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{created}}</v-list-item-title>
+          <v-list-item-subtitle>created</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{lastModified}}</v-list-item-title>
+          <v-list-item-subtitle>lastModified</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{surfaceForms}}</v-list-item-title>
+          <v-list-item-subtitle>surfaceForms</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+      <v-list-item two-line>
+        <v-list-item-content>
+          <v-list-item-title>{{spanid}}</v-list-item-title>
+          <v-list-item-subtitle>spanid</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
+
+    </v-list>
   </v-menu>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
@@ -68,7 +126,6 @@ export default {
   data() {
     return {
       showMenu: false,
-      activeMenu: false,
       urlPattern: RegExp(
         '^(https?:\\/\\/)?'+ // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -83,9 +140,6 @@ export default {
   computed: {
     textColor() {
       return idealColor(this.color)
-    },
-    labelField(){
-      return this.label + "\n" + this.type
     }
   },
 
@@ -101,7 +155,6 @@ export default {
 
     closeAllMenus() {
       this.showMenu = false;
-      this.activeMenu = false;
     },
 
     openEntLink(url){
