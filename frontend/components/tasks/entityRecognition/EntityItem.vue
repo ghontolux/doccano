@@ -1,7 +1,7 @@
 <template>
   <v-menu
       v-if="uri"
-      v-model="showMenu"
+      
       offset-y
   >
     <template #activator="{ on }">
@@ -9,64 +9,26 @@
         <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label"></span><span :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label">
       </span></span>
     </template>
-    <v-list>
+    <v-card
+    class="mx-auto"
+    max-width="500"
+    tile
+  >
+    <v-list flat>
       <v-subheader>Details</v-subheader>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{content}}</v-list-item-title>
-          <v-list-item-subtitle>content</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{label}}</v-list-item-title>
-          <v-list-item-subtitle>label</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{type}}</v-list-item-title>
-          <v-list-item-subtitle>type</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title selectable=true @click="openEntLink(uri)">{{uri}}</v-list-item-title>
-          <v-list-item-subtitle>uri</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{prominence}}</v-list-item-title>
-          <v-list-item-subtitle>prominence</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{created}}</v-list-item-title>
-          <v-list-item-subtitle>created</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{lastModified}}</v-list-item-title>
-          <v-list-item-subtitle>lastModified</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{surfaceForms}}</v-list-item-title>
-          <v-list-item-subtitle>surfaceForms</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-      <v-list-item two-line>
-        <v-list-item-content>
-          <v-list-item-title>{{spanid}}</v-list-item-title>
-          <v-list-item-subtitle>spanid</v-list-item-subtitle>
-        </v-list-item-content>
-      </v-list-item>
-
+      <v-list-item-group>
+        <v-list-item
+          v-for="(item, i) in listEntityData()"
+          :key="i"
+        >
+          <v-list-item-content>
+            <v-list-item-title @click="openEntLink(uri)" v-text="item.value"></v-list-item-title>
+            <v-list-item-subtitle v-text="item.name"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
     </v-list>
+  </v-card>
   </v-menu>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
@@ -95,7 +57,8 @@ export default {
       default: '#64FFDA'
     },
     newline: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
     label: {
       type: String,
@@ -125,7 +88,6 @@ export default {
 
   data() {
     return {
-      showMenu: false,
       urlPattern: RegExp(
         '^(https?:\\/\\/)?'+ // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -133,35 +95,41 @@ export default {
         '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*'+ // port and path
         '(\\?[;&a-z\\d%_.~+=-]*)?'+ // query string
         '(\\#[-a-z\\d_]*)?$','i' // fragment locator
-      ),
+      )
     }
   },
 
   computed: {
     textColor() {
       return idealColor(this.color)
-    }
+    },
   },
-
   methods: {
     update(label) {
       this.$emit('update', label)
-      this.closeAllMenus();
     },
 
     remove() {
       this.$emit('remove')
     },
 
-    closeAllMenus() {
-      this.showMenu = false;
-    },
-
     openEntLink(url){
       if(this.urlPattern.test(url)){
         window.open(url)
       }
-    }
+    },
+    listEntityData(){
+      return [
+        { name: "label", value:  this.label},
+        { name: "type", value:  this.type},
+        { name: "prominence", value:  this.prominence},
+        { name: "uri", value:  this.uri},
+        { name: "created", value:  this.created},
+        { name: "lastModified", value:  this.lastModified},
+        { name: "surfaceForms", value:  this.surfaceForms.join(", ")},
+        { name: "spanid", value: this.spanid},
+      ]
+    },
   }
 }
 </script>
