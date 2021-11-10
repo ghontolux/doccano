@@ -11,9 +11,9 @@
           :color="getLabelColor(chunk.type)"
           :label="chunk.label"
           :created="chunk.created"
-          :lastModified="chunk.lastModified"
+          :last-modified="chunk.lastModified"
           :prominence="chunk.prominence"
-          :surfaceForms="chunk.surfaceForms"
+          :surface-forms="chunk.surfaceForms"
           :type="chunk.type"
 
           @remove="deleteAnnotation(chunk.id)"
