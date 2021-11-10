@@ -7,6 +7,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile.prod
+    image: doccano_backend:prod
     volumes:
       - static_volume:/backend/staticfiles
       - media:/backend/media
@@ -30,6 +31,7 @@ services:
     build:
       context: .
       dockerfile: backend/Dockerfile.prod
+    image: doccano_celery:prod
     volumes:
       - media:/backend/media
     entrypoint: ["/opt/bin/prod-celery.sh"]
