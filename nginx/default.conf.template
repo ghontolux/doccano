@@ -22,8 +22,15 @@ http {
             proxy_read_timeout  300;
         }
 
-        location /txt-lexicon {
-            proxy_pass '${TXTWERK_LEXICON_PATH}';
+        location /txt-lexicon/typeahead {
+            proxy_pass '${TXTWERK_LEXICON_TYPEAHEAD_PATH}';
+            proxy_set_header Access-Control-Request-Headers X-Api-Key;
+            proxy_set_header X-Api-Key '${TXTWWERK_API_KEY}';
+            proxy_set_header Authorization 'Basic ${SERVER_AUTH}'
+        }
+
+        location /txt-lexicon/entries {
+            proxy_pass '${TXTWERK_LEXICON_ENTRIES_PATH}';
             proxy_set_header Access-Control-Request-Headers X-Api-Key;
             proxy_set_header X-Api-Key '${TXTWWERK_API_KEY}';
             proxy_set_header Authorization 'Basic ${SERVER_AUTH}'

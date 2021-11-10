@@ -1,15 +1,34 @@
 <template>
   <v-menu
-      v-if="label && !activeMenu"
-      v-model="showMenu"
+      v-if="uri"
+      
       offset-y
   >
     <template #activator="{ on }">
       <span :id="'spn-' + spanid" :style="{ borderColor: color }" class="highlight bottom" v-on="on">
-        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span></span><span
-          :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label" @click="openEntLink(label)">
-      </span>
+        <span class="highlight__content">{{ content }}<v-icon class="delete" @click.stop="remove">mdi-close-circle</v-icon></span><span :data-label="label" :style="{ backgroundColor: color, color: textColor }" class="highlight__label"></span><span :data-label="type" :style="{ backgroundColor: color, color: textColor }" class="highlight__label">
+      </span></span>
     </template>
+    <v-card
+    class="mx-auto"
+    max-width="500"
+    tile
+  >
+    <v-list flat>
+      <v-subheader>Details</v-subheader>
+      <v-list-item-group>
+        <v-list-item
+          v-for="(item, i) in listEntityData()"
+          :key="i"
+        >
+          <v-list-item-content>
+            <v-list-item-title @click="openEntLink(uri)" v-text="item.value"></v-list-item-title>
+            <v-list-item-subtitle v-text="item.name"></v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+      </v-list-item-group>
+    </v-list>
+  </v-card>
   </v-menu>
   <span v-else :class="[newline ? 'newline' : '']">{{ content }}</span>
 </template>
@@ -29,7 +48,7 @@ export default {
       default: '',
       required: true
     },
-    label: {
+    uri: {
       type: String,
       default: ''
     },
@@ -38,19 +57,37 @@ export default {
       default: '#64FFDA'
     },
     newline: {
-      type: Boolean
+      type: Boolean,
+      default: false
     },
-    sourceChunk: {
-      type: Object,
-      default: () => {
-      }
+    label: {
+      type: String,
+      default: " "
     },
+    created: {
+      type: String,
+      default: ""
+    },
+    lastModified: {
+      type: String,
+      default: ""
+    },
+    prominence: {
+      type: Number,
+      default: 0
+    },
+    surfaceForms: {
+      type: Array,
+      default() {return []}
+    },
+    type: {
+      type: String,
+      default: ""
+    }
   },
 
   data() {
     return {
-      showMenu: false,
-      activeMenu: false,
       urlPattern: RegExp(
         '^(https?:\\/\\/)?'+ // protocol
         '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,}|'+ // domain name
@@ -65,29 +102,34 @@ export default {
   computed: {
     textColor() {
       return idealColor(this.color)
-    }
+    },
   },
-
   methods: {
     update(label) {
       this.$emit('update', label)
-      this.closeAllMenus();
     },
 
     remove() {
       this.$emit('remove')
     },
 
-    closeAllMenus() {
-      this.showMenu = false;
-      this.activeMenu = false;
-    },
-
     openEntLink(url){
       if(this.urlPattern.test(url)){
         window.open(url)
       }
-    }
+    },
+    listEntityData(){
+      return [
+        { name: "label", value:  this.label},
+        { name: "type", value:  this.type},
+        { name: "prominence", value:  this.prominence},
+        { name: "uri", value:  this.uri},
+        { name: "created", value:  this.created},
+        { name: "lastModified", value:  this.lastModified},
+        { name: "surfaceForms", value:  this.surfaceForms.join(", ")},
+        { name: "spanid", value: this.spanid},
+      ]
+    },
   }
 }
 </script>
