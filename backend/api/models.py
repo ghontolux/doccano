@@ -1,4 +1,5 @@
 import string
+import uuid
 from typing import Literal
 
 from auto_labeling_pipeline.models import RequestModelFactory
@@ -161,6 +162,7 @@ class Label(models.Model):
 
 
 class Example(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, db_index=True, unique=True)
     meta = models.JSONField(default=dict)
     filename = models.FileField(default='.', max_length=1024)
     project = models.ForeignKey(

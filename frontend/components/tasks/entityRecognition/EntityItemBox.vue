@@ -249,7 +249,7 @@ export default {
         // Lazily load input items
         if (val.startsWith("https://")){
           const uri_components = val.split("/")
-          const call_txt = "/txt-lexicon/entries/" + "wikidata/" + uri_components[uri_components.length - 1]
+          const call_txt = "/txt-lexicon/entries/wikidata/" + uri_components[uri_components.length - 1]
           this.fetchTxtEnts(call_txt)
         }
         else {

@@ -127,7 +127,7 @@ export default {
 
       annotations.forEach(annotation => {
         const uri_components = annotation.ent_id.split("/")
-        const call_txt = "/txt-lexicon/entries/" + "wikidata/" + uri_components[uri_components.length - 1]
+        const call_txt = "/txt-lexicon/entries/wikidata/" + uri_components[uri_components.length - 1]
         fetch(
                 call_txt, {
                 headers: {}
