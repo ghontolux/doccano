@@ -3,7 +3,9 @@ from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
 from model_mommy import mommy
 
-from ..models import Category, Label, Span, TextLabel
+from ..models import (SEQUENCE_LABELING, Category, Label, Span, TextLabel,
+                      generate_random_hex_color)
+from .api.utils import prepare_project
 
 
 @override_settings(STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage')
@@ -116,21 +118,83 @@ class TestCategory(TestCase):
             Category(example=a.example, user=a.user, label=a.label).save()
 
 
-class TestSequenceAnnotation(TestCase):
+class TestSpan(TestCase):
 
-    def test_uniqueness(self):
-        a = mommy.make('Span')
+    def setUp(self):
+        self.project = prepare_project(SEQUENCE_LABELING, allow_overlapping=False)
+        self.example = mommy.make('Example', project=self.project.item)
+        self.user = self.project.users[0]
+
+    def test_start_offset_is_not_negative(self):
         with self.assertRaises(IntegrityError):
-            Span(example=a.example,
-                 user=a.user,
-                 label=a.label,
-                 start_offset=a.start_offset,
-                 end_offset=a.end_offset).save()
+            mommy.make('Span', start_offset=-1, end_offset=0)
 
-    def test_position_constraint(self):
+    def test_end_offset_is_not_negative(self):
+        with self.assertRaises(IntegrityError):
+            mommy.make('Span', start_offset=-2, end_offset=-1)
+
+    def test_start_offset_is_less_than_end_offset(self):
+        with self.assertRaises(IntegrityError):
+            mommy.make('Span', start_offset=0, end_offset=0)
+
+    def test_unique_constraint(self):
+        mommy.make('Span', example=self.example, start_offset=5, end_offset=10, user=self.user)
+        mommy.make('Span', example=self.example, start_offset=0, end_offset=5, user=self.user)
+        mommy.make('Span', example=self.example, start_offset=10, end_offset=15, user=self.user)
+
+    def test_unique_constraint_violated(self):
+        mommy.make('Span', example=self.example, start_offset=5, end_offset=10, user=self.user)
+        spans = [(5, 10), (5, 11), (4, 10), (6, 9), (9, 15), (0, 6)]
+        for start_offset, end_offset in spans:
+            with self.assertRaises(ValidationError):
+                mommy.make(
+                    'Span',
+                    example=self.example,
+                    start_offset=start_offset,
+                    end_offset=end_offset,
+                    user=self.user
+                )
+
+    def test_unique_constraint_if_overlapping_is_allowed(self):
+        project = prepare_project(SEQUENCE_LABELING, allow_overlapping=True)
+        example = mommy.make('Example', project=project.item)
+        user = project.users[0]
+        mommy.make('Span', example=example, start_offset=5, end_offset=10, user=user)
+        spans = [(5, 10), (5, 11), (4, 10), (6, 9), (9, 15), (0, 6)]
+        for start_offset, end_offset in spans:
+            mommy.make('Span', example=example, start_offset=start_offset, end_offset=end_offset, user=user)
+
+    def test_update(self):
+        span = mommy.make('Span', example=self.example, start_offset=0, end_offset=5)
+        span.end_offset = 6
+        span.save()
+
+
+class TestSpanWithoutCollaborativeMode(TestCase):
+
+    def setUp(self):
+        self.project = prepare_project(SEQUENCE_LABELING, False, allow_overlapping=False)
+        self.example = mommy.make('Example', project=self.project.item)
+
+    def test_allow_users_to_create_same_spans(self):
+        mommy.make('Span', example=self.example, start_offset=5, end_offset=10, user=self.project.users[0])
+        mommy.make('Span', example=self.example, start_offset=5, end_offset=10, user=self.project.users[1])
+
+
+class TestSpanWithCollaborativeMode(TestCase):
+
+    def test_deny_users_to_create_same_spans(self):
+        project = prepare_project(SEQUENCE_LABELING, True, allow_overlapping=False)
+        example = mommy.make('Example', project=project.item)
+        mommy.make('Span', example=example, start_offset=5, end_offset=10, user=project.users[0])
         with self.assertRaises(ValidationError):
-            mommy.make('Span',
-                       start_offset=1, end_offset=0).clean()
+            mommy.make('Span', example=example, start_offset=5, end_offset=10, user=project.users[1])
+
+    def test_allow_users_to_create_same_spans_if_overlapping_is_allowed(self):
+        project = prepare_project(SEQUENCE_LABELING, True, allow_overlapping=True)
+        example = mommy.make('Example', project=project.item)
+        mommy.make('Span', example=example, start_offset=5, end_offset=10, user=project.users[0])
+        mommy.make('Span', example=example, start_offset=5, end_offset=10, user=project.users[1])
 
 
 class TestSeq2seqAnnotation(TestCase):
@@ -141,3 +205,11 @@ class TestSeq2seqAnnotation(TestCase):
             TextLabel(example=a.example,
                       user=a.user,
                       text=a.text).save()
+
+
+class TestGeneratedColor(TestCase):
+
+    def test_length(self):
+        for i in range(100):
+            color = generate_random_hex_color()
+            self.assertEqual(len(color), 7)

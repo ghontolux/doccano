@@ -50,9 +50,7 @@ import ListMetadata from '@/components/tasks/metadata/ListMetadata'
 import ToolbarLaptop from '@/components/tasks/toolbar/ToolbarLaptop'
 import ToolbarMobile from '@/components/tasks/toolbar/ToolbarMobile'
 import EntityEditor from '@/components/tasks/sequenceLabeling/EntityEditor.vue'
-
 export default {
-
   components: {
     EntityEditor,
     LayoutText,
@@ -60,13 +58,10 @@ export default {
     ToolbarLaptop,
     ToolbarMobile
   },
-
   layout: 'workspace',
-
   validate({ params, query }) {
     return /^\d+$/.test(params.id) && /^\d+$/.test(query.page)
   },
-
   data() {
     return {
       annotations: [],
@@ -79,7 +74,6 @@ export default {
       rtl: false,
     }
   },
-
   async fetch() {
     this.docs = await this.$services.example.fetchOne(
       this.projectId,
@@ -93,11 +87,9 @@ export default {
     }
     await this.list(doc.id)
   },
-
   computed: {
     ...mapGetters('auth', ['isAuthenticated', 'getUsername', 'getUserId']),
     ...mapGetters('config', ['isRTL']),
-
     shortKeys() {
       return Object.fromEntries(this.labels.map(item => [item.id, [item.suffixKey]]))
     },
@@ -112,7 +104,6 @@ export default {
       }
     }
   },
-
   watch: {
     '$route.query': '$fetch',
     enableAutoLabeling(val) {
@@ -121,41 +112,43 @@ export default {
       }
     }
   },
-
   async created() {
     this.labels = await this.$services.label.list(this.projectId)
     this.linkTypes = await this.$services.linkTypes.list(this.projectId)
     this.project = await this.$services.project.findById(this.projectId)
   },
-
   methods: {
+    async maybeFetchLabels(annotations) {
+      const labelIds = new Set(this.labels.map((label) => label.id));
+      if (annotations.some((item) => !labelIds.has(item.label))) {
+          this.labels = await this.$services.label.list(this.projectId);
+      }
+    },
     async list(docId) {
       const annotations = await this.$services.sequenceLabeling.list(this.projectId, docId);
       const links = await this.$services.sequenceLabeling.listLinks(this.projectId);
+      // In colab mode, if someone add a new label and annotate data with the label during your work,
+      // it occurs exception because there is no corresponding label.
+      await this.maybeFetchLabels(annotations);
       this.annotations = annotations;
       this.links = links;
     },
-
     async deleteEntity(id) {
       await this.$services.sequenceLabeling.delete(this.projectId, this.doc.id, id)
       await this.list(this.doc.id)
     },
-
     async addEntity(startOffset, endOffset, labelId) {
       await this.$services.sequenceLabeling.create(this.projectId, this.doc.id, labelId, startOffset, endOffset)
       await this.list(this.doc.id)
     },
-
     async updateEntity(annotationId, labelId) {
       await this.$services.sequenceLabeling.changeLabel(this.projectId, this.doc.id, annotationId, labelId)
       await this.list(this.doc.id)
     },
-
     async clear() {
       await this.$services.sequenceLabeling.clear(this.projectId, this.doc.id)
       await this.list(this.doc.id)
     },
-
     async autoLabel(docId) {
       try {
         await this.$services.sequenceLabeling.autoLabel(this.projectId, docId)
@@ -163,7 +156,6 @@ export default {
         console.log(e.response.data.detail)
       }
     },
-
     async confirm() {
       await this.$services.example.confirm(this.projectId, this.doc.id)
       await this.$fetch()

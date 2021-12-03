@@ -4,7 +4,7 @@ from django.test import TestCase
 
 from ..models import (DOCUMENT_CLASSIFICATION, SEQ2SEQ, SEQUENCE_LABELING,
                       Category, Example, Label, Span)
-from ..tasks import injest_data
+from ..tasks import ingest_data
 from .api.utils import prepare_project
 
 
@@ -20,13 +20,14 @@ class TestIngestData(TestCase):
     def ingest_data(self, filename, file_format, kwargs=None):
         filenames = [str(self.data_path / filename)]
         kwargs = kwargs or {}
-        return injest_data(self.user.id, self.project.item.id, filenames, file_format, **kwargs)
+        return ingest_data(self.user.id, self.project.item.id, filenames, file_format, **kwargs)
 
 
 class TestIngestClassificationData(TestIngestData):
     task = DOCUMENT_CLASSIFICATION
 
     def assert_examples(self, dataset):
+        self.assertEqual(Example.objects.count(), len(dataset))
         for text, expected_labels in dataset:
             example = Example.objects.get(text=text)
             labels = set(cat.label.text for cat in example.categories.all())
@@ -106,7 +107,7 @@ class TestIngestClassificationData(TestIngestData):
         filename = 'example.txt'
         file_format = 'TextFile'
         dataset = [
-            ('exampleA\nexampleB\nexampleC\n', [])
+            ('exampleA\nexampleB\n\nexampleC\n', [])
         ]
         self.ingest_data(filename, file_format)
         self.assert_examples(dataset)
@@ -151,6 +152,7 @@ class TestIngestSequenceLabelingData(TestIngestData):
     task = SEQUENCE_LABELING
 
     def assert_examples(self, dataset):
+        self.assertEqual(Example.objects.count(), len(dataset))
         for text, expected_labels in dataset:
             example = Example.objects.get(text=text)
             labels = [[span.start_offset, span.end_offset, span.label.text] for span in example.spans.all()]
@@ -188,11 +190,18 @@ class TestIngestSequenceLabelingData(TestIngestData):
         response = self.ingest_data(filename, file_format)
         self.assert_parse_error(response)
 
+    def test_jsonl_with_overlapping(self):
+        filename = 'sequence_labeling/example_overlapping.jsonl'
+        file_format = 'JSONL'
+        response = self.ingest_data(filename, file_format)
+        self.assertEqual(len(response['error']), 1)
+
 
 class TestIngestSeq2seqData(TestIngestData):
     task = SEQ2SEQ
 
     def assert_examples(self, dataset):
+        self.assertEqual(Example.objects.count(), len(dataset))
         for text, expected_labels in dataset:
             example = Example.objects.get(text=text)
             labels = set(text_label.text for text_label in example.texts.all())
