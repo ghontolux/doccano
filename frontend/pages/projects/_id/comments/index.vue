@@ -19,9 +19,10 @@
     </v-card-title>
     <comment-list
       v-model="selected"
-      :examples="examples.items"
-      :items="items"
+      :items="item.items"
       :is-loading="isLoading"
+      :total="item.count"
+      @update:query="updateQuery"
       @click:labeling="movePage"
     />
   </v-card>
@@ -29,44 +30,35 @@
 
 <script lang="ts">
 import Vue from 'vue'
+import _ from 'lodash'
 import CommentList from '@/components/comment/CommentList.vue'
-import { CommentReadDTO } from '~/services/application/comment/commentData'
-import { ExampleListDTO } from '~/services/application/example/exampleData'
+import { CommentReadDTO, CommentListDTO } from '~/services/application/comment/commentData'
 import { ProjectDTO } from '~/services/application/project/projectData'
 import FormDelete from '~/components/comment/FormDelete.vue'
-
 export default Vue.extend({
-
   components: {
     CommentList,
     FormDelete
   },
   layout: 'project',
-
   validate({ params }) {
     return /^\d+$/.test(params.id)
   },
-
   data() {
     return {
       dialogDelete: false,
       project: {} as ProjectDTO,
-      items: [] as CommentReadDTO[],
+      item: {} as CommentListDTO,
       selected: [] as CommentReadDTO[],
-      examples: {} as ExampleListDTO,
       isLoading: false
     }
   },
-
   async fetch() {
     this.isLoading = true
     this.project = await this.$services.project.findById(this.projectId)
-    this.items = await this.$services.comment.listProjectComment(this.projectId)
-    const example = await this.$services.example.fetchOne(this.projectId,'1','','') // to fetch the count of examples
-    this.examples = await this.$services.example.list(this.projectId, {limit: example.count.toString()})
+    this.item = await this.$services.comment.listProjectComment(this.projectId, this.$route.query)
     this.isLoading = false
   },
-
   computed: {
     canDelete(): boolean {
       return this.selected.length > 0
@@ -75,7 +67,13 @@ export default Vue.extend({
       return this.$route.params.id
     }
   },
-
+  watch: {
+    '$route.query': _.debounce(function() {
+        // @ts-ignore
+        this.$fetch()
+      }, 1000
+    ),
+  },
   methods: {
     async remove() {
       await this.$services.comment.deleteBulk(this.projectId, this.selected)

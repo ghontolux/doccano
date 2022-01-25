@@ -68,6 +68,49 @@ doccano task
 
 Go to <http://127.0.0.1:8000/>.
 
+By default, sqlite3 is used for the default database. If you want to use PostgreSQL, install the additional dependency:
+
+```bash
+pip install 'doccano[postgresql]'
+```
+
+Create an .env file with variables in the following format, each on a new line:
+
+```bash
+POSTGRES_USER=doccano
+POSTGRES_PASSWORD=doccano
+POSTGRES_DB=doccano
+```
+
+Then, pass it to docker run with the --env-file flag:
+
+```bash
+docker run --rm -d \
+    -p 5432:5432 \
+    -v postgres-data:/var/lib/postgresql/data \
+    --env-file .env \
+    postgres:13.3-alpine
+```
+
+And set `DATABASE_URL` environment variable:
+
+```bash
+# Please replace each variable.
+DATABASE_URL=postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/${POSTGRES_DB}?sslmode=disable
+```
+
+Now run the command as before:
+
+```bash
+doccano init
+doccano createuser --username admin --password pass
+doccano webserver --port 8000
+
+# In another terminal.
+# Don't forget to set DATABASE_URL
+doccano task
+```
+
 ### Docker
 
 As a one-time setup, create a Docker container as follows:
@@ -107,12 +150,22 @@ _Note for Windows developers:_ Be sure to configure git to correctly handle line
 git clone https://github.com/doccano/doccano.git --config core.autocrlf=input
 ```
 
-Set the superuser account credentials in the `./config/env.example` file:
+Then, create an `.env` file with variables in the following format(see [./config/.env.example](https://github.com/doccano/doccano/blob/master/config/.env.example)):
 
 ```plain
+# platform settings
 ADMIN_USERNAME=admin
 ADMIN_PASSWORD=password
 ADMIN_EMAIL=admin@example.com
+
+# rabbit mq settings
+RABBITMQ_DEFAULT_USER=doccano
+RABBITMQ_DEFAULT_PASS=doccano
+
+# database settings
+POSTGRES_USER=doccano
+POSTGRES_PASSWORD=doccano
+POSTGRES_DB=doccano
 ```
 
 #### Production

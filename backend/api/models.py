@@ -1,3 +1,4 @@
+import random
 import string
 import uuid
 from typing import Literal
@@ -106,6 +107,10 @@ class ImageClassificationProject(Project):
         return task == 'image'
 
 
+def generate_random_hex_color():
+    return f'#{random.randint(0, 0xFFFFFF):06x}'
+
+
 class Label(models.Model):
     text = models.CharField(max_length=100, db_index=True)
     prefix_key = models.CharField(
@@ -131,7 +136,7 @@ class Label(models.Model):
         on_delete=models.CASCADE,
         related_name='labels'
     )
-    background_color = models.CharField(max_length=7, default='#209cee')
+    background_color = models.CharField(max_length=7, default=generate_random_hex_color)
     text_color = models.CharField(max_length=7, default='#ffffff')
     created_at = models.DateTimeField(auto_now_add=True, db_index=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -289,18 +294,36 @@ class Span(Annotation):
     start_offset = models.IntegerField()
     end_offset = models.IntegerField()
 
-    def clean(self):
-        if self.start_offset >= self.end_offset:
-            raise ValidationError('start_offset > end_offset')
+    def validate_unique(self, exclude=None):
+        allow_overlapping = getattr(self.example.project, 'allow_overlapping', False)
+        is_collaborative = self.example.project.collaborative_annotation
+        if allow_overlapping:
+            super().validate_unique(exclude=exclude)
+            return
+
+        overlapping_span = Span.objects.exclude(id=self.id).filter(example=self.example).filter(
+            models.Q(start_offset__gte=self.start_offset, start_offset__lt=self.end_offset) |
+            models.Q(end_offset__gt=self.start_offset, end_offset__lte=self.end_offset) |
+            models.Q(start_offset__lte=self.start_offset, end_offset__gte=self.end_offset)
+        )
+        if is_collaborative:
+            if overlapping_span.exists():
+                raise ValidationError('This overlapping is not allowed in this project.')
+        else:
+            if overlapping_span.filter(user=self.user).exists():
+                raise ValidationError('This overlapping is not allowed in this project.')
+
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.full_clean()
+        super().save(force_insert, force_update, using, update_fields)
 
     class Meta:
-        unique_together = (
-            'example',
-            'user',
-            'label',
-            'start_offset',
-            'end_offset'
-        )
+        constraints = [
+            models.CheckConstraint(check=models.Q(start_offset__gte=0), name='startOffset >= 0'),
+            models.CheckConstraint(check=models.Q(end_offset__gte=0), name='endOffset >= 0'),
+            models.CheckConstraint(check=models.Q(start_offset__lt=models.F('end_offset')), name='start < end')
+        ]
 
 
 class EntitySpan(Annotation):
