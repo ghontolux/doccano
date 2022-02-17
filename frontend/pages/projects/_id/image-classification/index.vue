@@ -62,7 +62,8 @@
       </v-card>
     </template>
     <template #sidebar>
-      <list-metadata :metadata="image.meta" />
+      <annotation-progress :progress="progress" />
+      <list-metadata :metadata="image.meta" class="mt-4" />
     </template>
   </layout-text>
 </template>
@@ -70,7 +71,7 @@
 <script>
 import _ from 'lodash'
 import { mdiText, mdiFormatListBulleted } from '@mdi/js'
-import { toRefs } from '@nuxtjs/composition-api'
+import { toRefs, useContext } from '@nuxtjs/composition-api'
 import LabelGroup from '@/components/tasks/textClassification/LabelGroup'
 import LabelSelect from '@/components/tasks/textClassification/LabelSelect'
 import LayoutText from '@/components/tasks/layout/LayoutText'
@@ -78,10 +79,12 @@ import ListMetadata from '@/components/tasks/metadata/ListMetadata'
 import ToolbarLaptop from '@/components/tasks/toolbar/ToolbarLaptop'
 import ToolbarMobile from '@/components/tasks/toolbar/ToolbarMobile'
 import { useLabelList } from '@/composables/useLabelList'
+import AnnotationProgress from '@/components/tasks/sidebar/AnnotationProgress.vue'
 
 export default {
 
   components: {
+    AnnotationProgress,
     LabelGroup,
     LabelSelect,
     LayoutText,
@@ -96,7 +99,8 @@ export default {
   },
 
   setup() {
-    const { state, getLabelList, shortKeys } = useLabelList()
+    const { app } = useContext()
+    const { state, getLabelList, shortKeys } = useLabelList(app.$services.categoryType)
 
     return {
       ...toRefs(state),
@@ -117,7 +121,8 @@ export default {
         width: 0
       },
       mdiText,
-      mdiFormatListBulleted
+      mdiFormatListBulleted,
+      progress: {}
     }
   },
 
@@ -161,6 +166,7 @@ export default {
   async created() {
     this.getLabelList(this.projectId)
     this.project = await this.$services.project.findById(this.projectId)
+    this.progress = await this.$services.metrics.fetchMyProgress(this.projectId)
   },
 
   methods: {
@@ -201,9 +207,14 @@ export default {
       }
     },
 
+    async updateProgress() {
+      this.progress = await this.$services.metrics.fetchMyProgress(this.projectId)
+    },
+
     async confirm() {
       await this.$services.example.confirm(this.projectId, this.image.id)
       await this.$fetch()
+      this.updateProgress()
     },
 
     setImageSize(val) {

@@ -1,8 +1,12 @@
 <template>
   <v-card>
+    <v-tabs v-if="hasMultiType" v-model="tab">
+      <v-tab class="text-capitalize">Category</v-tab>
+      <v-tab class="text-capitalize">Span</v-tab>
+    </v-tabs>
     <v-card-title>
       <action-menu
-        @create="dialogCreate=true"
+        @create="$router.push('labels/add?type=' + labelType)"
         @upload="dialogUpload=true"
         @download="download"
       />
@@ -14,15 +18,6 @@
       >
         {{ $t('generic.delete') }}
       </v-btn>
-      <v-dialog v-model="dialogCreate">
-        <form-create
-          v-bind.sync="editedItem"
-          :used-keys="usedKeys"
-          :used-names="usedNames"
-          @cancel="close"
-          @save="save"
-        />
-      </v-dialog>
       <v-dialog v-model="dialogUpload">
         <form-upload
           :error-message="errorMessage"
@@ -51,7 +46,6 @@
 <script lang="ts">
 import Vue from 'vue'
 import ActionMenu from '@/components/label/ActionMenu.vue'
-import FormCreate from '@/components/label/FormCreate.vue'
 import FormDelete from '@/components/label/FormDelete.vue'
 import FormUpload from '@/components/label/FormUpload.vue'
 import LabelList from '@/components/label/LabelList.vue'
@@ -62,7 +56,6 @@ export default Vue.extend({
 
   components: {
     ActionMenu,
-    FormCreate,
     FormDelete,
     FormUpload,
     LabelList
@@ -81,28 +74,14 @@ export default Vue.extend({
 
   data() {
     return {
-      dialogCreate: false,
       dialogDelete: false,
       dialogUpload: false,
-      editedIndex: -1,
-      editedItem: {
-        text: '',
-        prefixKey: null,
-        suffixKey: null,
-        backgroundColor: '#2196F3',
-        textColor: '#ffffff'
-      } as LabelDTO,
-      defaultItem: {
-        text: '',
-        prefixKey: null,
-        suffixKey: null,
-        backgroundColor: '#2196F3',
-        textColor: '#ffffff'
-      } as LabelDTO,
       items: [] as LabelDTO[],
       selected: [] as LabelDTO[],
       isLoading: false,
-      errorMessage: ''
+      errorMessage: '',
+      tab: null,
+      project: {} as ProjectDTO,
     }
   },
 
@@ -116,62 +95,84 @@ export default Vue.extend({
     canDelete(): boolean {
       return this.selected.length > 0
     },
+
     projectId(): string {
       return this.$route.params.id
     },
-    usedNames(): string[] {
-      const item = this.items[this.editedIndex] // to remove myself
-      return this.items.filter(_ => _ !== item).map(item => item.text)
+
+    hasMultiType(): boolean {
+      if ('projectType' in this.project) {
+        return this.project.projectType === 'IntentDetectionAndSlotFilling'
+      } else {
+        return false
+      }
     },
-    usedKeys(): string[] {
-      const item = this.items[this.editedIndex] // to remove myself
-      return this.items.filter(_ => _ !== item).map(item => item.suffixKey)
-                       .filter(item => item !==null) as string[]
+
+    labelType(): string {
+      if (this.hasMultiType) {
+        if (this.tab === 0) {
+          return 'category'
+        } else {
+          return 'span'
+        }
+      } else if (this.project.projectType.endsWith('Classification')) {
+        return 'category'
+      } else {
+        return 'span'
+      }
+    },
+
+    service(): any {
+      if (!('projectType' in this.project)) {
+        return
+      }
+      if (this.hasMultiType) {
+        if (this.tab === 0) {
+          return this.$services.categoryType
+        } else {
+          return this.$services.spanType
+        }
+      } else if (this.project.projectType.endsWith('Classification')) {
+        return this.$services.categoryType
+      } else {
+        return this.$services.spanType
+      }
     }
   },
 
+  watch: {
+    tab() {
+      this.list()
+    }
+  },
+
+  async created() {
+    this.project = await this.$services.project.findById(this.projectId)
+    await this.list()
+  },
+
   methods: {
-    async create() {
-      await this.$services.label.create(this.projectId, this.editedItem)
+    async list() {
+      this.isLoading = true
+      this.items = await this.service.list(this.projectId)
+      this.isLoading = false
     },
-
-    async update() {
-      await this.$services.label.update(this.projectId, this.editedItem)
-    },
-
-    save() {
-      if (this.editedIndex > -1) {
-        this.update()
-      } else {
-        this.create()
-      }
-      this.$fetch()
-      this.close()
-    },
-
-    close() {
-      this.dialogCreate = false
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem)
-        this.editedIndex = -1
-      })
-    },
-
+  
     async remove() {
-      await this.$services.label.bulkDelete(this.projectId, this.selected)
-      this.$fetch()
+      await this.service.bulkDelete(this.projectId, this.selected)
+      this.list()
       this.dialogDelete = false
       this.selected = []
     },
 
     async download() {
-      await this.$services.label.export(this.projectId)
+      await this.service.export(this.projectId)
     },
 
     async upload(file: File) {
       try {
-        await this.$services.label.upload(this.projectId, file)
-        this.$fetch()
+        await this.service.upload(this.projectId, file)
+        this.list()
         this.closeUpload()
       } catch(e) {
         this.errorMessage = e.message
@@ -188,9 +189,7 @@ export default Vue.extend({
     },
 
     editItem(item: LabelDTO) {
-      this.editedIndex = this.items.indexOf(item)
-      this.editedItem = Object.assign({}, item)
-      this.dialogCreate = true
+      this.$router.push(`labels/${item.id}/edit?type=${this.labelType}`)
     }
   }
 })

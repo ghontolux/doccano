@@ -1,7 +1,7 @@
+import { plainToInstance } from 'class-transformer'
 import { ExampleDTO, ExampleListDTO } from './exampleData'
 import { ExampleRepository, SearchOption } from '~/domain/models/example/exampleRepository'
 import { ExampleItem } from '~/domain/models/example/example'
-
 
 export class ExampleApplicationService {
   constructor(
@@ -12,7 +12,7 @@ export class ExampleApplicationService {
     try {
       const item = await this.repository.list(projectId, options)
       return new ExampleListDTO(item)
-    } catch(e) {
+    } catch(e: any) {
       throw new Error(e.response.data.detail)
     }
   }
@@ -33,7 +33,7 @@ export class ExampleApplicationService {
       const doc = this.toModel(item)
       const response = await this.repository.create(projectId, doc)
       return new ExampleDTO(response)
-    } catch(e) {
+    } catch(e: any) {
       throw new Error(e.response.data.detail)
     }
   }
@@ -42,7 +42,7 @@ export class ExampleApplicationService {
     try {
       const doc = this.toModel(item)
       await this.repository.update(projectId, doc)
-    } catch(e) {
+    } catch(e: any) {
       throw new Error(e.response.data.detail)
     }
   }
@@ -57,23 +57,13 @@ export class ExampleApplicationService {
     return new ExampleDTO(response)
   }
 
-  public async approve(projectId: string, docId: number, approved: boolean): Promise<void> {
-    await this.repository.approve(projectId, docId, approved)
-  }
-
   public async confirm(projectId: string, exampleId: number): Promise<void> {
     await this.repository.confirm(projectId, exampleId)
   }
 
   private toModel(item: ExampleDTO): ExampleItem {
-    return new ExampleItem(
-      item.id,
-      item.text,
-      item.meta,
-      item.annotationApprover,
-      item.commentCount,
-      item.fileUrl,
-      item.isConfirmed
-    )
+    // Todo: annotationApprover, commentCount, fileUrl and isConfirmed
+    // is not copied correctly.
+    return plainToInstance(ExampleItem, item)
   }
 }

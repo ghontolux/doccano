@@ -1,6 +1,7 @@
+import { plainToInstance } from 'class-transformer'
 import ApiService from '@/services/api.service'
-import { ProjectRepository } from '@/domain/models/project/projectRepository'
-import { ProjectReadItem, ProjectWriteItem } from '~/domain/models/project/project'
+import { ProjectRepository, SearchOption } from '@/domain/models/project/projectRepository'
+import { ProjectReadItem, ProjectWriteItem, ProjectItemList } from '~/domain/models/project/project'
 
 
 export class APIProjectRepository implements ProjectRepository {
@@ -8,25 +9,22 @@ export class APIProjectRepository implements ProjectRepository {
     private readonly request = ApiService
   ) {}
 
-  async list(): Promise<ProjectReadItem[]> {
-    const url = `/projects`
+  async list({ limit = '10', offset = '0', q = '' }: SearchOption): Promise<ProjectItemList> {
+    const url = `/projects?limit=${limit}&offset=${offset}&q=${q}`
     const response = await this.request.get(url)
-    const responseItems: ProjectReadItem[] = response.data
-    return responseItems.map(item => ProjectReadItem.valueOf(item))
+    return plainToInstance(ProjectItemList, response.data)
   }
 
   async findById(id: string): Promise<ProjectReadItem> {
     const url = `/projects/${id}`
     const response = await this.request.get(url)
-    const responseItem: ProjectReadItem = response.data
-    return ProjectReadItem.valueOf(responseItem)
+    return plainToInstance(ProjectReadItem, response.data)
   }
 
   async create(item: ProjectWriteItem): Promise<ProjectReadItem> {
     const url = `/projects`
     const response = await this.request.post(url, item.toObject())
-    const responseItem: ProjectReadItem = response.data
-    return ProjectReadItem.valueOf(responseItem)
+    return plainToInstance(ProjectReadItem, response.data)
   }
 
   async update(item: ProjectWriteItem): Promise<void> {

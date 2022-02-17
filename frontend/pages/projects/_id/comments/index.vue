@@ -35,15 +35,19 @@ import CommentList from '@/components/comment/CommentList.vue'
 import { CommentReadDTO, CommentListDTO } from '~/services/application/comment/commentData'
 import { ProjectDTO } from '~/services/application/project/projectData'
 import FormDelete from '~/components/comment/FormDelete.vue'
+
 export default Vue.extend({
+
   components: {
     CommentList,
     FormDelete
   },
   layout: 'project',
+
   validate({ params }) {
     return /^\d+$/.test(params.id)
   },
+
   data() {
     return {
       dialogDelete: false,
@@ -53,12 +57,14 @@ export default Vue.extend({
       isLoading: false
     }
   },
+
   async fetch() {
     this.isLoading = true
     this.project = await this.$services.project.findById(this.projectId)
     this.item = await this.$services.comment.listProjectComment(this.projectId, this.$route.query)
     this.isLoading = false
   },
+
   computed: {
     canDelete(): boolean {
       return this.selected.length > 0
@@ -67,6 +73,7 @@ export default Vue.extend({
       return this.$route.params.id
     }
   },
+
   watch: {
     '$route.query': _.debounce(function() {
         // @ts-ignore
@@ -74,6 +81,7 @@ export default Vue.extend({
       }, 1000
     ),
   },
+
   methods: {
     async remove() {
       await this.$services.comment.deleteBulk(this.projectId, this.selected)

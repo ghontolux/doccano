@@ -45,7 +45,8 @@
       </v-card>
     </template>
     <template #sidebar>
-      <list-metadata :metadata="example.meta" />
+      <annotation-progress :progress="progress" />
+      <list-metadata :metadata="example.meta" class="mt-4" />
     </template>
   </layout-text>
 </template>
@@ -63,10 +64,12 @@ import { useExampleItem } from '@/composables/useExampleItem'
 import { useLabelList } from '@/composables/useLabelList'
 import { useProjectItem } from '@/composables/useProjectItem'
 import { useTeacherList } from '@/composables/useTeacherList'
+import AnnotationProgress from '@/components/tasks/sidebar/AnnotationProgress.vue'
 
 export default {
 
   components: {
+    AnnotationProgress,
     ButtonLabelSwitch,
     LabelGroup,
     LabelSelect,
@@ -85,7 +88,7 @@ export default {
     const { app, params, query } = useContext()
     const projectId = params.value.id
     const { state: projectState, getProjectById } = useProjectItem()
-    const { state: exampleState, confirm, getExample } = useExampleItem()
+    const { state: exampleState, confirm, getExample, updateProgress } = useExampleItem()
     const {
       state: teacherState,
       annotateLabel,
@@ -96,11 +99,12 @@ export default {
       removeTeacher
     } = useTeacherList(app.$services.textClassification)
     const enableAutoLabeling = ref(false)
-    const { state: labelState, getLabelList, shortKeys } = useLabelList()
+    const { state: labelState, getLabelList, shortKeys } = useLabelList(app.$services.categoryType)
     const labelComponent = ref('label-group')
 
     getLabelList(projectId)
     getProjectById(projectId)
+    updateProgress(projectId)
 
     const { fetch } = useFetch(async() => {
       await getExample(

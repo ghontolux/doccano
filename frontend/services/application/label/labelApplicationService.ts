@@ -1,4 +1,5 @@
 import { LabelDTO } from './labelData'
+import { CreateLabelCommand } from './labelCommand';
 import { LabelRepository } from '~/domain/models/label/labelRepository'
 import { LabelItem } from '~/domain/models/label/label'
 
@@ -13,14 +14,34 @@ export class LabelApplicationService {
     return items.map(item => new LabelDTO(item))
   }
 
-  public create(projectId: string, item: LabelDTO): void {
-    const label = new LabelItem(0, item.text, item.prefixKey, item.suffixKey, item.backgroundColor, item.textColor)
-    this.repository.create(projectId, label)
+  public async findById(projectId: string, labelId: number): Promise<LabelDTO> {
+    const item = await this.repository.findById(projectId, labelId)
+    return new LabelDTO(item)
   }
 
-  public update(projectId: string, item: LabelDTO): void {
-    const label = new LabelItem(item.id, item.text, item.prefixKey, item.suffixKey, item.backgroundColor, item.textColor)
-    this.repository.update(projectId, label)
+  public async create(projectId: string, item: CreateLabelCommand): Promise<LabelDTO> {
+    // Todo: use auto mapping.
+    const label = new LabelItem()
+    label.text = item.text
+    label.prefixKey = item.prefixKey
+    label.suffixKey = item.suffixKey
+    label.backgroundColor = item.backgroundColor
+    label.textColor = item.textColor
+    const created = await this.repository.create(projectId, label)
+    return new LabelDTO(created)
+  }
+
+  public async update(projectId: string, item: LabelDTO): Promise<LabelDTO> {
+    // Todo: use auto mapping.
+    const label = new LabelItem()
+    label.id = item.id
+    label.text = item.text
+    label.prefixKey = item.prefixKey
+    label.suffixKey = item.suffixKey
+    label.backgroundColor = item.backgroundColor
+    label.textColor = item.textColor
+    const updated = await this.repository.update(projectId, label)
+    return new LabelDTO(updated)
   }
 
   public bulkDelete(projectId: string, items: LabelDTO[]): Promise<void> {

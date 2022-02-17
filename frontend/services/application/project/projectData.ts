@@ -1,11 +1,10 @@
-import { ProjectReadItem, CurrentUsersRole, ProjectType } from '~/domain/models/project/project'
+import { ProjectReadItem, ProjectType, ProjectItemList } from '~/domain/models/project/project'
 
 export class ProjectDTO {
   id: number
   name: string
   description: string
   guideline: string
-  current_users_role: CurrentUsersRole
   projectType: ProjectType
   updatedAt: string
   enableRandomOrder: boolean
@@ -18,26 +17,45 @@ export class ProjectDTO {
   isTextProject: boolean
   allowOverlapping: boolean
   graphemeMode: boolean
+  hasCategory: boolean
+  hasSpan: boolean
+  taskNames: string[]
 
   constructor(item: ProjectReadItem) {
     this.id = item.id
     this.name = item.name
     this.description = item.description
     this.guideline = item.guideline
-    this.current_users_role = item.current_users_role
-    this.projectType = item.project_type
-    this.updatedAt = item.updated_at
-    this.enableRandomOrder = item.random_order
+    this.projectType = item.projectType
+    this.updatedAt = item.updatedAt
+    this.enableRandomOrder = item.randomOrder
     this.enableShareAnnotation = item.collaborative_annotation
-    this.singleClassClassification = item.single_class_classification
+    this.singleClassClassification = item.exclusiveCategories
     this.pageLink = item.annotationPageLink
     this.tags = item.tags
     this.canDefineLabel = item.canDefineLabel
     this.canDefineRelation = item.canDefineRelation
     this.isTextProject = item.isTextProject
-    this.allowOverlapping = item.allow_overlapping
-    this.graphemeMode = item.grapheme_mode
+    this.allowOverlapping = item.allowOverlapping
+    this.graphemeMode = item.graphemeMode
+    this.hasCategory = item.canDefineCategory
+    this.hasSpan = item.canDefineSpan
+    this.taskNames = item.taskNames
   }
 }
 
 export type ProjectWriteDTO = Pick<ProjectDTO, 'id' | 'name' | 'description' | 'guideline' | 'projectType' | 'enableRandomOrder' | 'enableShareAnnotation' | 'singleClassClassification' | 'allowOverlapping' | 'graphemeMode' | 'tags'>
+
+export class ProjectListDTO {
+  count: number
+  next : string | null
+  prev : string | null
+  items: ProjectDTO[]
+
+  constructor(item: ProjectItemList) {
+    this.count = item.count
+    this.next = item.next
+    this.prev = item.prev
+    this.items = item.items.map(_ => new ProjectDTO(_))
+  }
+}

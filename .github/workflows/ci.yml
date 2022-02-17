@@ -31,6 +31,13 @@ jobs:
       run: |
         pipenv run isort
       working-directory: ./backend
+    - name: Black
+      run: |
+        pipenv run black
+      working-directory: ./backend
+    - name: mypy
+      run: |
+        pipenv run mypy
     - name: Run tests
       run: |
         pipenv run test
