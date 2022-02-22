@@ -5,6 +5,7 @@ from model_mommy import mommy
 
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTYTY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -59,6 +60,7 @@ def make_project(task: str, users: List[str], roles: List[str], collaborative_an
     # create a project.
     project_model = {
         DOCUMENT_CLASSIFICATION: "TextClassificationProject",
+        ENTYTY_LINKING: "EntityLinkingProject",
         SEQUENCE_LABELING: "SequenceLabelingProject",
         SEQ2SEQ: "Seq2seqProject",
         SPEECH2TEXT: "Speech2TextProject",

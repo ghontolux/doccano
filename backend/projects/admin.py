@@ -7,6 +7,7 @@ from .models import (
     SequenceLabelingProject,
     Tag,
     TextClassificationProject,
+    EntityLinkingProject
 )
 
 
@@ -43,4 +44,5 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(TextClassificationProject, ProjectAdmin)
 admin.site.register(SequenceLabelingProject, ProjectAdmin)
 admin.site.register(Seq2seqProject, ProjectAdmin)
+admin.site.register(EntityLinkingProject, ProjectAdmin)
 admin.site.register(Tag, TagAdmin)

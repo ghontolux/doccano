@@ -15,6 +15,8 @@ SEQ2SEQ = "Seq2seq"
 SPEECH2TEXT = "Speech2text"
 IMAGE_CLASSIFICATION = "ImageClassification"
 INTENT_DETECTION_AND_SLOT_FILLING = "IntentDetectionAndSlotFilling"
+ENTITY_LINKING = "EntityLinking"
+
 PROJECT_CHOICES = (
     (DOCUMENT_CLASSIFICATION, "document classification"),
     (SEQUENCE_LABELING, "sequence labeling"),
@@ -22,6 +24,7 @@ PROJECT_CHOICES = (
     (INTENT_DETECTION_AND_SLOT_FILLING, "intent detection and slot filling"),
     (SPEECH2TEXT, "speech to text"),
     (IMAGE_CLASSIFICATION, "image classification"),
+    (ENTITY_LINKING, "entity linking")
 )
 
 
@@ -102,6 +105,17 @@ class SequenceLabelingProject(Project):
 
     @property
     def can_define_label(self) -> bool:
+        return True
+
+    @property
+    def can_define_span(self) -> bool:
+        return True
+
+
+class EntityLinkingProject(Project):
+
+    @property
+    def is_text_project(self) -> bool:
         return True
 
     @property

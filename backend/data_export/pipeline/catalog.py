@@ -7,6 +7,7 @@ from typing_extensions import Literal
 from . import examples
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -93,3 +94,6 @@ Options.register(IMAGE_CLASSIFICATION, JSONL, OptionNone, examples.CategoryImage
 
 # Speech to Text
 Options.register(SPEECH2TEXT, JSONL, OptionNone, examples.Speech2Text)
+
+# Entity Linking
+Options.register(ENTITY_LINKING, JSONL, OptionNone, examples.Offset_JSONL)

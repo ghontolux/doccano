@@ -11,6 +11,7 @@ from .models import (
     Speech2textProject,
     Tag,
     TextClassificationProject,
+    EntityLinkingProject
 )
 
 
@@ -107,6 +108,11 @@ class Speech2textProjectSerializer(ProjectSerializer):
 class ImageClassificationProjectSerializer(ProjectSerializer):
     class Meta(ProjectSerializer.Meta):
         model = ImageClassificationProject
+
+
+class EntityLinkingProjectSerializer(ProjectSerializer):
+    class Meta(ProjectSerializer.Meta):
+        model = EntityLinkingProject
 
 
 class ProjectPolymorphicSerializer(PolymorphicSerializer):

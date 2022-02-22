@@ -4,7 +4,7 @@ from typing import Any, Dict, Optional
 from pydantic import BaseModel, validator
 
 from label_types.models import CategoryType, LabelType, SpanType
-from labels.models import Category, Span
+from labels.models import Category, Span, EntitySpan
 from labels.models import TextLabel as TL
 from projects.models import Project
 
@@ -101,6 +101,42 @@ class SpanLabel(Label):
             start_offset=self.start_offset,
             end_offset=self.end_offset,
             label=mapping[self.label],
+        )
+
+
+class EntitySpanLabel(Label):
+    ent_id: str
+    start_offset: int
+    end_offset: int
+
+    def has_name(self) -> bool:
+        return True
+
+    @property
+    def name(self) -> str:
+        return self.ent_id
+
+    @classmethod
+    def parse(cls, obj: Any):
+        if isinstance(obj, list) or isinstance(obj, tuple):
+            columns = ["start_offset", "end_offset", "ent_id"]
+            obj = zip(columns, obj)
+            return cls.parse_obj(obj)
+        elif isinstance(obj, dict):
+            return cls.parse_obj(obj)
+        else:
+            raise TypeError(f"{obj} is invalid type.")
+
+    def create(self, project: Project) -> Optional[LabelType]:
+        return None
+
+    def create_annotation(self, user, example, mapping: Dict[str, LabelType]):
+        return EntitySpanLabel(
+            user=user,
+            example=example,
+            start_offset=self.start_offset,
+            end_offset=self.end_offset,
+            ent_id=self.ent_id,
         )
 
 
