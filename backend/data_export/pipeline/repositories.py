@@ -126,7 +126,7 @@ class SequenceLabelingRepository(TextRepository):
         return label_per_user
 
 
-class EntityRecognitionRepository(TextRepository):
+class EntityLinkingRepository(TextRepository):
 
     @property
     def docs(self):

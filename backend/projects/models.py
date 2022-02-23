@@ -19,12 +19,12 @@ ENTITY_LINKING = "EntityLinking"
 
 PROJECT_CHOICES = (
     (DOCUMENT_CLASSIFICATION, "document classification"),
+    (ENTITY_LINKING, "entity linking"),
     (SEQUENCE_LABELING, "sequence labeling"),
     (SEQ2SEQ, "sequence to sequence"),
     (INTENT_DETECTION_AND_SLOT_FILLING, "intent detection and slot filling"),
     (SPEECH2TEXT, "speech to text"),
     (IMAGE_CLASSIFICATION, "image classification"),
-    (ENTITY_LINKING, "entity linking")
 )
 
 

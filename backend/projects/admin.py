@@ -1,13 +1,13 @@
 from django.contrib import admin
 
 from .models import (
+    EntityLinkingProject,
     Member,
     Project,
     Seq2seqProject,
     SequenceLabelingProject,
     Tag,
     TextClassificationProject,
-    EntityLinkingProject
 )
 
 

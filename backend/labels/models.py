@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from .managers import CategoryManager, LabelManager, SpanManager, TextLabelManager
+from .managers import CategoryManager, EntitySpanManager, LabelManager, SpanManager, TextLabelManager
 from examples.models import Example
 from label_types.models import CategoryType, RelationType, SpanType
 from projects.models import Project
@@ -80,7 +80,7 @@ class Span(Label):
 
 
 class EntitySpan(Label):
-    objects = SpanManager()
+    objects = EntitySpanManager()
     example = models.ForeignKey(to=Example, on_delete=models.CASCADE, related_name="entityspans")
     ent_id = models.TextField()
     start_offset = models.IntegerField()

@@ -15,6 +15,7 @@ from projects.models import (
 def create_repository(project):
     mapping = {
         DOCUMENT_CLASSIFICATION: repositories.TextClassificationRepository,
+        ENTITY_LINKING: repositories.EntityLinkingRepository,
         SEQUENCE_LABELING: repositories.SequenceLabelingRepository,
         SEQ2SEQ: repositories.Seq2seqRepository,
         IMAGE_CLASSIFICATION: repositories.FileRepository,

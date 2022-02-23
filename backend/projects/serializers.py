@@ -2,6 +2,7 @@ from rest_framework import serializers
 from rest_polymorphic.serializers import PolymorphicSerializer
 
 from .models import (
+    EntityLinkingProject,
     ImageClassificationProject,
     IntentDetectionAndSlotFillingProject,
     Member,
@@ -11,7 +12,6 @@ from .models import (
     Speech2textProject,
     Tag,
     TextClassificationProject,
-    EntityLinkingProject
 )
 
 
