@@ -206,3 +206,5 @@ webpack-stats.json
 /frontend/components/layout/doccano.json
 /frontend/run.bat
 /run-docker-dev.bat
+
+/config
