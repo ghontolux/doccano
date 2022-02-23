@@ -99,17 +99,10 @@ class EntitySpan(Label):
 
     class Meta:
         constraints = [
-            models.CheckConstraint(check=models.Q(start_offset__gte=0), name="startOffset >= 0"),
-            models.CheckConstraint(check=models.Q(end_offset__gte=0), name="endOffset >= 0"),
-            models.CheckConstraint(check=models.Q(start_offset__lt=models.F("end_offset")), name="start < end"),
+            models.CheckConstraint(check=models.Q(start_offset__gte=0), name="startOffset>=0"),
+            models.CheckConstraint(check=models.Q(end_offset__gte=0), name="endOffset>=0"),
+            models.CheckConstraint(check=models.Q(start_offset__lt=models.F("end_offset")), name="start<end"),
         ]
-        unique_together = (
-            'example',
-            'user',
-            'ent_id',
-            'start_offset',
-            'end_offset'
-        )
 
 
 class TextLabel(Label):
