@@ -99,6 +99,34 @@ export default {
     // Use a fake value for use at build-time
     '/v1/': {
       target: process.env.API_URL || 'http://127.0.0.1:8000'
+    },
+
+    '/txt-api/': {
+      target: process.env.TXTWERK_API,
+      pathRewrite: {'^/txt-api/': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+      }
+    },
+    '/txt-lexicon/typeahead': {
+      target: process.env.TXTWERK_LEXICON_TYPEAHEAD_PATH,
+      pathRewrite: {'^/txt-lexicon/typeahead': ''},
+      headers: {
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+        "Authorization": "Basic " + process.env.SERVER_AUTH
+      }
+    },
+    '/txt-lexicon/entries': {
+      target: process.env.TXTWERK_LEXICON_ENTRIES_PATH,
+      pathRewrite: {'^/txt-lexicon/entries': ''},
+      headers: {
+        "Accept": "application/json",
+        "Access-Control-Request-Headers": "X-Api-Key",
+        "X-Api-Key": process.env.TXTWWERK_API_KEY,
+        "Authorization": "Basic " + process.env.SERVER_AUTH
+      }
     }
   },
   /*
