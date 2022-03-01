@@ -3,6 +3,8 @@ from django.urls import path
 from .views import (
     CategoryDetailAPI,
     CategoryListAPI,
+    EntitySpanListAPI,
+    EntitySpanDetailAPI,
     RelationDetail,
     RelationList,
     SpanDetailAPI,
@@ -28,4 +30,6 @@ urlpatterns = [
         view=TextLabelDetailAPI.as_view(),
         name="text_detail",
     ),
+    path(route="examples/<int:example_id>/entityspans", view=EntitySpanListAPI.as_view(), name="entityspan_list"),
+    path(route="examples/<int:example_id>/entityspans/<int:annotation_id>", view=EntitySpanDetailAPI.as_view(), name="entityspan_list")
 ]

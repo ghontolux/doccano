@@ -10,11 +10,12 @@ from rest_framework.response import Response
 from .permissions import CanEditLabel
 from .serializers import (
     CategorySerializer,
+    EntitySpanSerializer,
     RelationSerializer,
     SpanSerializer,
     TextLabelSerializer,
 )
-from labels.models import Category, Label, Relation, Span, TextLabel
+from labels.models import Category, Label, Relation, Span, TextLabel, EntitySpan
 from projects.models import Project
 from projects.permissions import IsProjectMember
 
@@ -86,6 +87,16 @@ class CategoryDetailAPI(BaseDetailAPI):
 class SpanListAPI(BaseListAPI):
     label_class = Span
     serializer_class = SpanSerializer
+
+
+class EntitySpanListAPI(BaseListAPI):
+    label_class = EntitySpan
+    serializer_class = EntitySpanSerializer
+
+
+class EntitySpanDetailAPI(BaseDetailAPI):
+    queryset = EntitySpan.objects.all()
+    serializer_class = EntitySpanSerializer
 
 
 class SpanDetailAPI(BaseDetailAPI):

@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Category, Relation, Span, TextLabel
+from .models import Category, EntitySpan, Relation, Span, TextLabel
 from examples.models import Example
 from label_types.models import CategoryType, SpanType
 
@@ -37,6 +37,25 @@ class SpanSerializer(serializers.ModelSerializer):
             "created_at",
             "updated_at",
             "label",
+            "start_offset",
+            "end_offset",
+        )
+        read_only_fields = ("user",)
+
+
+class EntitySpanSerializer(serializers.ModelSerializer):
+    example = serializers.PrimaryKeyRelatedField(queryset=Example.objects.all())
+
+    class Meta:
+        model = EntitySpan
+        fields = (
+            "id",
+            "prob",
+            "user",
+            "example",
+            "created_at",
+            "updated_at",
+            "ent_id",
             "start_offset",
             "end_offset",
         )

@@ -76,7 +76,6 @@ class SpanTypeSerializer(LabelSerializer):
             "text_color",
         )
 
-
 class RelationTypesSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         return super().validate(attrs)

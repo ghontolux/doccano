@@ -131,7 +131,7 @@ class EntitySpanLabel(Label):
         return None
 
     def create_annotation(self, user, example, mapping: Dict[str, LabelType]):
-        return EntitySpanLabel(
+        return EntitySpan(
             user=user,
             example=example,
             start_offset=self.start_offset,
