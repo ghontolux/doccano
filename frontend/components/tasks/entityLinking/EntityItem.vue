@@ -14,6 +14,13 @@
     max-width="500"
     tile
   >
+    <v-btn
+      class="ma-2"
+      color="secondary"
+      @click.stop="remove"
+    >
+      Delete
+    </v-btn>
     <v-list flat>
       <v-subheader>Details</v-subheader>
       <v-list-item-group>
