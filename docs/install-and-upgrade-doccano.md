@@ -66,6 +66,7 @@ docker container create --name doccano \
   -e "ADMIN_USERNAME=admin" \
   -e "ADMIN_EMAIL=admin@example.com" \
   -e "ADMIN_PASSWORD=password" \
+  -v doccano-db:/data \
   -p 8000:8000 doccano/doccano
 ```
 
@@ -98,10 +99,10 @@ cd doccano
 To install and start doccano at <http://localhost>, run the following command:
 
 ```bash
-docker-compose -f docker/docker-compose.prod.yml --env-file ./docker/.env.example up
+docker-compose -f docker/docker-compose.prod.yml --env-file .env up
 ```
 
-You can override the default setting by rewriting the `.env` file.
+You can override the default setting by rewriting the `.env` file. See [./docker/.env.example](https://github.com/doccano/doccano/blob/master/docker/.env.example) in detail.
 
 ## Install from source
 

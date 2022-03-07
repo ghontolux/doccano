@@ -15,6 +15,10 @@ You can try the [annotation demo](http://doccano.herokuapp.com).
 
 ![Demo image](https://raw.githubusercontent.com/doccano/doccano/master/docs/images/demo/demo.gif)
 
+## Documentation
+
+Read the documentation at the <https://doccano.github.io/doccano/>.
+
 ## Features
 
 - Collaborative annotation
@@ -80,6 +84,7 @@ docker container create --name doccano \
   -e "ADMIN_USERNAME=admin" \
   -e "ADMIN_EMAIL=admin@example.com" \
   -e "ADMIN_PASSWORD=password" \
+  -v doccano-db:/data \
   -p 8000:8000 doccano/doccano
 ```
 
@@ -130,7 +135,7 @@ POSTGRES_DB=doccano
 After running the following command, access <http://127.0.0.1/>.
 
 ```bash
-docker-compose -f docker/docker-compose.prod.yml --env-file ./docker/.env.example up
+docker-compose -f docker/docker-compose.prod.yml --env-file .env up
 ```
 
 ### One-click Deployment

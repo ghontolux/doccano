@@ -43,14 +43,12 @@ import { DownloadApplicationService } from '~/services/application/download/down
 import { DownloadFormatApplicationService } from '~/services/application/download/downloadFormatApplicationService'
 import { APITagRepository } from '~/repositories/tag/apiTagRepository'
 import { TagApplicationService } from '~/services/application/tag/tagApplicationService'
-import {ApiLinkRepository} from "~/repositories/links/apiLinkRepository";
-import {LinkTypesApplicationService} from "~/services/application/links/linkTypesApplicationService";
-import {ApiLinkTypesRepository} from "~/repositories/links/apiLinkTypesRepository";
+import { ApiRelationRepository } from "~/repositories/tasks/sequenceLabeling/apiRelationRepository"
 
 export interface Services {
   categoryType: LabelApplicationService,
   spanType: LabelApplicationService,
-  linkTypes: LinkTypesApplicationService,
+  relationType: LabelApplicationService,
   member: MemberApplicationService,
   user: UserApplicationService,
   role: RoleApplicationService,
@@ -81,7 +79,6 @@ declare module 'vue/types/vue' {
 }
 
 const plugin: Plugin = (context, inject) => {
-  const linkTypesRepository = new ApiLinkTypesRepository()
   const memberRepository     = new APIMemberRepository()
   const userRepository       = new APIUserRepository()
   const roleRepository       = new APIRoleRepository()
@@ -92,7 +89,7 @@ const plugin: Plugin = (context, inject) => {
   const textClassificationRepository = new APITextClassificationRepository()
   const entityLinkingRepository = new APIEntityLinkingRepository()
   const sequenceLabelingRepository   = new APISequenceLabelingRepository()
-  const linkRepository = new ApiLinkRepository()
+  const linkRepository = new ApiRelationRepository()
   const seq2seqRepository = new APISeq2seqRepository()
   const optionRepository     = new LocalStorageOptionRepository()
   const configRepository     = new APIConfigRepository()
@@ -107,7 +104,7 @@ const plugin: Plugin = (context, inject) => {
 
   const categoryType  = new LabelApplicationService(new APILabelRepository('category-type'))
   const spanType      = new LabelApplicationService(new APILabelRepository('span-type'))
-  const linkTypes = new LinkTypesApplicationService(linkTypesRepository)
+  const relationType      = new LabelApplicationService(new APILabelRepository('relation-type'))
   const member     = new MemberApplicationService(memberRepository)
   const user       = new UserApplicationService(userRepository)
   const role       = new RoleApplicationService(roleRepository)
@@ -133,7 +130,7 @@ const plugin: Plugin = (context, inject) => {
   const services: Services = {
     categoryType,
     spanType,
-    linkTypes,
+    relationType,
     member,
     user,
     role,
