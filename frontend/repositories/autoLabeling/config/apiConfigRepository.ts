@@ -58,7 +58,6 @@ export class APIConfigRepository implements ConfigRepository {
   }
 
   async testTemplate(projectId: string, response: any, item: ConfigItem): Promise<ConfigTestResponse> {
-    console.log(projectId)
     const url = `/projects/${projectId}/auto-labeling/label-extractor-testing`
     const _response = await this.request.post(url, { response, ...item.toAPI() })
     const responseItem: ConfigTestResponse = _response.data

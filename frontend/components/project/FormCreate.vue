@@ -179,6 +179,7 @@ export default Vue.extend({
     projectTypes() {
       return [
         'DocumentClassification',
+        'EntityLinking',
         'SequenceLabeling',
         'Seq2seq',
         'IntentDetectionAndSlotFilling',

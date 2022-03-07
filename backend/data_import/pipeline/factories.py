@@ -1,6 +1,7 @@
 from . import builders, catalog, cleaners, data, labels, parsers, readers
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -10,7 +11,9 @@ from projects.models import (
 
 
 def get_data_class(project_type: str):
-    text_projects = [DOCUMENT_CLASSIFICATION, SEQUENCE_LABELING, SEQ2SEQ, INTENT_DETECTION_AND_SLOT_FILLING]
+    text_projects = [
+        DOCUMENT_CLASSIFICATION, SEQUENCE_LABELING, SEQ2SEQ, INTENT_DETECTION_AND_SLOT_FILLING, ENTITY_LINKING
+    ]
     if project_type in text_projects:
         return data.TextData
     else:
@@ -38,6 +41,7 @@ def create_parser(file_format: str, **kwargs):
 def get_label_class(project_type: str):
     mapping = {
         DOCUMENT_CLASSIFICATION: labels.CategoryLabel,
+        ENTITY_LINKING: labels.EntitySpanLabel,
         SEQUENCE_LABELING: labels.SpanLabel,
         SEQ2SEQ: labels.TextLabel,
         IMAGE_CLASSIFICATION: labels.CategoryLabel,
