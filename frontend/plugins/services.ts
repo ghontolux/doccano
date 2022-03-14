@@ -6,6 +6,7 @@ import { CatalogApplicationService } from '../services/application/upload/catalo
 import { APIParseRepository } from '../repositories/upload/apiParseRepository'
 import { ParseApplicationService } from '../services/application/upload/parseApplicationService'
 import { APISequenceLabelingRepository } from '~/repositories/tasks/sequenceLabeling/apiSequenceLabeling'
+import { APIEntityLinkingRepository } from '~/repositories/tasks/entityLinking/apiEntityLinking'
 import { APISeq2seqRepository } from '~/repositories/tasks/seq2seq/apiSeq2seq'
 import { APIConfigRepository } from '~/repositories/autoLabeling/config/apiConfigRepository'
 import { APITemplateRepository } from '~/repositories/autoLabeling/template/apiTemplateRepository'
@@ -29,6 +30,7 @@ import { MetricsApplicationService } from '~/services/application/metrics/metric
 import { ExampleApplicationService } from '~/services/application/example/exampleApplicationService'
 import { OptionApplicationService } from '~/services/application/option/optionApplicationService'
 import { SequenceLabelingApplicationService } from '~/services/application/tasks/sequenceLabeling/sequenceLabelingApplicationService'
+import { EntityLinkingApplicationService } from '~/services/application/tasks/entityLinking/entityLinkingApplicationService'
 import { Seq2seqApplicationService } from '~/services/application/tasks/seq2seq/seq2seqApplicationService'
 import { ConfigApplicationService } from '~/services/application/autoLabeling/configApplicationService'
 import { TemplateApplicationService } from '~/services/application/autoLabeling/templateApplicationService'
@@ -55,6 +57,7 @@ export interface Services {
   metrics: MetricsApplicationService,
   example: ExampleApplicationService,
   textClassification: TextClassificationApplicationService,
+  entityLinking: EntityLinkingApplicationService,
   sequenceLabeling: SequenceLabelingApplicationService,
   seq2seq: Seq2seqApplicationService,
   option: OptionApplicationService,
@@ -84,6 +87,7 @@ const plugin: Plugin = (context, inject) => {
   const metricsRepository = new APIMetricsRepository()
   const exampleRepository    = new APIExampleRepository()
   const textClassificationRepository = new APITextClassificationRepository()
+  const entityLinkingRepository = new APIEntityLinkingRepository()
   const sequenceLabelingRepository   = new APISequenceLabelingRepository()
   const linkRepository = new ApiRelationRepository()
   const seq2seqRepository = new APISeq2seqRepository()
@@ -109,6 +113,7 @@ const plugin: Plugin = (context, inject) => {
   const metrics = new MetricsApplicationService(metricsRepository)
   const example    = new ExampleApplicationService(exampleRepository)
   const textClassification = new TextClassificationApplicationService(textClassificationRepository)
+  const entityLinking = new EntityLinkingApplicationService(entityLinkingRepository)
   const sequenceLabeling   = new SequenceLabelingApplicationService(sequenceLabelingRepository, linkRepository)
   const seq2seq = new Seq2seqApplicationService(seq2seqRepository)
   const option = new OptionApplicationService(optionRepository)
@@ -134,6 +139,7 @@ const plugin: Plugin = (context, inject) => {
     metrics,
     example,
     textClassification,
+    entityLinking,
     sequenceLabeling,
     seq2seq,
     option,

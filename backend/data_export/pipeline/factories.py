@@ -3,6 +3,7 @@ from typing import Type
 from . import catalog, repositories, writers
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -16,6 +17,7 @@ def create_repository(project):
         return repositories.RelationExtractionRepository(project)
     mapping = {
         DOCUMENT_CLASSIFICATION: repositories.TextClassificationRepository,
+        ENTITY_LINKING: repositories.EntityLinkingRepository,
         SEQUENCE_LABELING: repositories.SequenceLabelingRepository,
         SEQ2SEQ: repositories.Seq2seqRepository,
         IMAGE_CLASSIFICATION: repositories.FileRepository,

@@ -4,6 +4,7 @@ from django.db import models
 
 from .managers import (
     CategoryManager,
+    EntitySpanManager,
     LabelManager,
     RelationManager,
     SpanManager,
@@ -81,6 +82,32 @@ class Span(Label):
             models.CheckConstraint(check=models.Q(start_offset__gte=0), name="startOffset >= 0"),
             models.CheckConstraint(check=models.Q(end_offset__gte=0), name="endOffset >= 0"),
             models.CheckConstraint(check=models.Q(start_offset__lt=models.F("end_offset")), name="start < end"),
+        ]
+
+
+class EntitySpan(Label):
+    objects = EntitySpanManager()
+    example = models.ForeignKey(to=Example, on_delete=models.CASCADE, related_name="entityspans")
+    ent_id = models.TextField()
+    start_offset = models.IntegerField()
+    end_offset = models.IntegerField()
+
+    def clean(self):
+        if self.start_offset >= self.end_offset:
+            raise ValidationError('start_offset > end_offset')
+
+    def is_overlapping(self, other: "EntitySpan"):
+        return (
+                (other.start_offset <= self.start_offset < other.end_offset)
+                or (other.start_offset < self.end_offset <= other.end_offset)
+                or (self.start_offset < other.start_offset and other.end_offset < self.end_offset)
+        )
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(check=models.Q(start_offset__gte=0), name="startOffset>=0"),
+            models.CheckConstraint(check=models.Q(end_offset__gte=0), name="endOffset>=0"),
+            models.CheckConstraint(check=models.Q(start_offset__lt=models.F("end_offset")), name="start<end"),
         ]
 
 

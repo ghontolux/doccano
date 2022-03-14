@@ -3,6 +3,7 @@ export default {
   projectName: 'Project name',
   projectType: 'Project type',
   textClassification: 'Text Classification',
+  entityLinking: 'Entity Linking',
   sequenceLabeling: 'Sequence Labeling',
   sequenceToSequence: 'Sequence to sequence',
   randomizeDocOrder: 'Randomize document order',
@@ -13,6 +14,7 @@ export default {
   search: 'Search',
   projectTypes: [
     'Text Classification',
+    'Entity Linking',
     'Sequence Labeling',
     'Sequence to sequence',
     'Intent Detection and Slot Filling',

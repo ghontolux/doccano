@@ -33,7 +33,7 @@
             </v-col>
           </v-row>
         </v-item-group>
-        
+
         <v-text-field
           :value="name"
           :rules="projectNameRules($t('rules.projectNameRules'))"
@@ -209,6 +209,7 @@ export default Vue.extend({
     projectTypes() {
       return [
         'DocumentClassification',
+        'EntityLinking',
         'SequenceLabeling',
         'Seq2seq',
         'IntentDetectionAndSlotFilling',
