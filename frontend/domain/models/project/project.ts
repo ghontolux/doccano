@@ -102,6 +102,7 @@ export class ProjectWriteItem {
     public allow_overlapping:           boolean,
     public grapheme_mode:               boolean,
     public use_relation:                boolean,
+    public tags:                        string[],
   ) {}
 
   get resourceType(): string {
@@ -130,6 +131,7 @@ export class ProjectWriteItem {
       allow_overlapping: this.allow_overlapping,
       grapheme_mode: this.grapheme_mode,
       use_relation: this.use_relation,
+      tags: this.tags.map(tag => ({text: tag})),
       resourcetype: this.resourceType
     }
   }

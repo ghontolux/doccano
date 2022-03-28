@@ -13,6 +13,8 @@ jobs:
     - name: Preparation
       run: |
         mkdir backend/client
+    - name: Fix up git URLs
+      run: echo -e '[url "https://github.com/"]\n  insteadOf = "git@github.com:"' >> ~/.gitconfig
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
@@ -32,8 +34,9 @@ jobs:
     - name: Install dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install poetry
+        pip install poetry poetry-dynamic-versioning
         poetry install
+      working-directory: ./backend
     - name: collectstatic
       run: |
         poetry run task collectstatic
@@ -47,3 +50,4 @@ jobs:
       with:
         user: ${{ secrets.PYPI_USERNAME }}
         password: ${{ secrets.PYPI_PASSWORD }}
+        packages_dir: ./backend/dist/

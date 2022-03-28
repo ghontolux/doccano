@@ -49,7 +49,13 @@ def run_on_nix(args):
         def load(self):
             return gunicorn.util.import_app("config.wsgi")
 
-    options = {"bind": "%s:%s" % ("0.0.0.0", args.port), "workers": number_of_workers(), "chdir": base}
+    options = {
+        "bind": "%s:%s" % ("0.0.0.0", args.port),
+        "workers": args.workers,
+        "chdir": base,
+        "capture_output": True,
+        "loglevel": "debug",
+    }
     StandaloneApplication(options).run()
 
 
@@ -128,6 +134,7 @@ def main():
     # Create a parser for web server.
     parser_server = subparsers.add_parser("webserver", help="see `webserver -h`")
     parser_server.add_argument("--port", type=int, default=8000, help="port number")
+    parser_server.add_argument("--workers", type=int, default=number_of_workers(), help="the number of workers")
     parser_server.set_defaults(handler=command_run_webserver)
 
     # Create a parser for task queue.
