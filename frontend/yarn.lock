@@ -5665,9 +5665,9 @@ etag@^1.8.1, etag@~1.8.1:
   resolved "https://registry.yarnpkg.com/etag/-/etag-1.8.1.tgz#41ae2eeb65efa62268aebfea83ac7d79299b0887"
   integrity sha1-Qa4u62XvpiJorr/qg6x9eSmbCIc=
 
-"eve@git://github.com/adobe-webplatform/eve.git#eef80ed":
+"eve@https://github.com/adobe-webplatform/eve.git#eef80ed":
   version "0.4.1"
-  resolved "git://github.com/adobe-webplatform/eve.git#eef80ed8d188423c2272746fb8ae5cc8dad84cb1"
+  resolved "https://github.com/adobe-webplatform/eve.git#eef80ed8d188423c2272746fb8ae5cc8dad84cb1"
 
 eventemitter3@^4.0.0:
   version "4.0.7"
@@ -8383,10 +8383,10 @@ minimatch@^3.0.4:
   dependencies:
     brace-expansion "^1.1.7"
 
-minimist@^1.2.0, minimist@^1.2.5:
-  version "1.2.5"
-  resolved "https://registry.yarnpkg.com/minimist/-/minimist-1.2.5.tgz#67d66014b66a6a8aaa0c083c5fd58df4e4e97602"
-  integrity sha512-FM9nNUYrRBAELZQT3xeZQ7fmMOBg6nWNmJKTcgsJeaLstP/UODVpGsr5OhXhhXg6f+qtJ8uiZ+PUxkDWcgIXLw==
+minimist@^1.2.0, minimist@^1.2.5, "minimist@npm:minimist-lite@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/minimist-lite/-/minimist-lite-2.2.0.tgz#43992acac6bb17e78acb6eee784d1da2f7cc3216"
+  integrity sha512-o9M0Iz5ELqCT4NzeaZHBBlV4+ruOGGWV6lVxFoghC6Wvp4W6ECbBBpmDRHdk72O/sMh3QT0c/0XDKhtGlztRZw==
 
 minipass-collect@^1.0.2:
   version "1.0.2"
@@ -10225,7 +10225,7 @@ range-parser@^1.2.1, range-parser@~1.2.1:
   version "2.2.0-c"
   resolved "https://github.com/nhn/raphael.git#78a6ed3ec269f33b6457b0ec66f8c3d1f2ed70e0"
   dependencies:
-    eve "git://github.com/adobe-webplatform/eve.git#eef80ed"
+    eve "https://github.com/adobe-webplatform/eve.git#eef80ed"
 
 raw-loader@^4.0.2:
   version "4.0.2"
