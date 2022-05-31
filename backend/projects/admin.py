@@ -1,6 +1,7 @@
 from django.contrib import admin
 
 from .models import (
+    EntityLinkingProject,
     Member,
     Project,
     Seq2seqProject,
@@ -43,4 +44,5 @@ admin.site.register(Project, ProjectAdmin)
 admin.site.register(TextClassificationProject, ProjectAdmin)
 admin.site.register(SequenceLabelingProject, ProjectAdmin)
 admin.site.register(Seq2seqProject, ProjectAdmin)
+admin.site.register(EntityLinkingProject, ProjectAdmin)
 admin.site.register(Tag, TagAdmin)

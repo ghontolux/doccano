@@ -4,6 +4,7 @@ from typing import Dict, List, Type
 
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -93,3 +94,7 @@ Options.register(IMAGE_CLASSIFICATION, JSONL, IMAGE_CLASSIFICATION_DIR / "exampl
 # Speech to Text
 SPEECH2TEXT_DIR = EXAMPLE_DIR / "speech_to_text"
 Options.register(SPEECH2TEXT, JSONL, SPEECH2TEXT_DIR / "example.jsonl")
+
+# Entity Linking
+ENTITY_LINKING_DIR = EXAMPLE_DIR / "entity_linking"
+Options.register(ENTITY_LINKING, JSONL, ENTITY_LINKING_DIR / "example.jsonl")

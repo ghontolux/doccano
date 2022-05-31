@@ -3,7 +3,7 @@ from typing import Any, Dict, Protocol, Tuple
 from django.db import models
 
 from examples.models import Example
-from labels.models import Category, Relation, Span, TextLabel
+from labels.models import Category, EntitySpan, Relation, Span, TextLabel
 from projects.models import Project
 
 DATA = "data"
@@ -60,6 +60,22 @@ class ExportedSpan(Span):
 
     def to_tuple(self):
         return self.start_offset, self.end_offset, self.label.text
+
+    class Meta:
+        proxy = True
+
+
+class ExportedEntitySpan(EntitySpan):
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "label": self.ent_span,
+            "start_offset": self.start_offset,
+            "end_offset": self.end_offset,
+        }
+
+    def to_tuple(self):
+        return self.start_offset, self.end_offset, self.ent_span
 
     class Meta:
         proxy = True

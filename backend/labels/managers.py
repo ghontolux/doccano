@@ -67,6 +67,15 @@ class SpanManager(LabelManager):
         return True
 
 
+class EntitySpanManager(LabelManager):
+    def can_annotate(self, label, project) -> bool:
+        spans = self.get_labels(label, project)
+        for span in spans:
+            if span.is_overlapping(label):
+                return False
+        return True
+
+
 class TextLabelManager(LabelManager):
     def can_annotate(self, label, project) -> bool:
         texts = self.get_labels(label, project)

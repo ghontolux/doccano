@@ -32,6 +32,14 @@ def check_uploaded_files(upload_ids: List[str], file_format: Format):
     cleaned_ids = []
     temporary_uploads = TemporaryUpload.objects.filter(upload_id__in=upload_ids)
     for tu in temporary_uploads:
+        print("###############")
+        print(tu)
+        print(type(tu))
+        print(tu.__dict__)
+        import os
+        print("###############")
+        print(os.listdir())
+        print(os.listdir("filepond-temp-uploads"))
         if tu.file.size > settings.MAX_UPLOAD_SIZE:
             errors.append(MaximumFileSizeException(tu.upload_name, settings.MAX_UPLOAD_SIZE))
             tu.delete()

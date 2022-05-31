@@ -3,6 +3,7 @@ export default {
   projectName: 'Nom du projet',
   projectType: 'Type de projet',
   textClassification: 'Classification des textes',
+  entityLinking: 'Liaison entre entités',
   sequenceLabeling: 'Étiquetage des séquences',
   sequenceToSequence: 'Séquence à séquence',
   randomizeDocOrder: "Randomiser l'ordre des documents",
@@ -11,6 +12,7 @@ export default {
   deleteProjectMessage: 'Êtes-vous sûr de vouloir supprimer ces projets ?',
   projectTypes: [
     'Classification des textes',
+    'Liaison entre entités',
     'Étiquetage des séquences',
     'Séquence à séquence',
     "Détection d'intention et remplissage d'emplacements",

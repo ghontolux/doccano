@@ -12,6 +12,7 @@ from labels.models import Label as LabelModel
 from labels.models import Relation as RelationModel
 from labels.models import Span as SpanModel
 from labels.models import TextLabel as TextLabelModel
+from labels.models import EntitySpan as EntitySpanModel
 from projects.models import Project
 
 
@@ -101,6 +102,45 @@ class SpanLabel(Label):
             start_offset=self.start_offset,
             end_offset=self.end_offset,
             label=types[self.label],
+        )
+
+
+class EntitySpanLabel(Label):
+    ent_id: NonEmptyStr
+    start_offset: NonNegativeInt
+    end_offset: NonNegativeInt
+
+    def __lt__(self, other):
+        return self.start_offset < other.start_offset
+
+    @root_validator
+    def check_start_offset_is_less_than_end_offset(cls, values):
+        start_offset, end_offset = values.get("start_offset"), values.get("end_offset")
+        if start_offset >= end_offset:
+            raise ValueError("start_offset must be less than end_offset.")
+        return values
+
+    @classmethod
+    def parse(cls, example_uuid: UUID4, obj: Any):
+        if isinstance(obj, list) or isinstance(obj, tuple):
+            columns = ["start_offset", "end_offset", "ent_id"]
+            obj = zip(columns, obj)
+            return cls(example_uuid=example_uuid, **dict(obj))
+        elif isinstance(obj, dict):
+            return cls(example_uuid=example_uuid, **obj)
+        raise ValueError("EntitySpanLabel.parse()")
+
+    def create_type(self, project: Project):
+        return None
+
+    def create(self, user, example: Example, types: LabelTypes, **kwargs):
+        return EntitySpanModel(
+            uuid=self.uuid,
+            user=user,
+            example=example,
+            start_offset=self.start_offset,
+            end_offset=self.end_offset,
+            ent_id=self.ent_id
         )
 
 

@@ -9,6 +9,7 @@ from typing_extensions import Literal
 from .exceptions import FileFormatException
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -26,6 +27,7 @@ SEQ2SEQ_DIR = EXAMPLE_DIR / "sequence_to_sequence"
 INTENT_DETECTION_DIR = EXAMPLE_DIR / "intent_detection"
 IMAGE_CLASSIFICATION_DIR = EXAMPLE_DIR / "image_classification"
 SPEECH_TO_TEXT_DIR = EXAMPLE_DIR / "speech_to_text"
+ENTITY_LINKING_DIR = EXAMPLE_DIR / "entity_linking"
 
 # Define the task identifiers
 RELATION_EXTRACTION = "RelationExtraction"
@@ -284,7 +286,7 @@ class Options:
 
 
 # Text tasks
-text_tasks = [DOCUMENT_CLASSIFICATION, SEQUENCE_LABELING, SEQ2SEQ, INTENT_DETECTION_AND_SLOT_FILLING]
+text_tasks = [DOCUMENT_CLASSIFICATION, ENTITY_LINKING, SEQUENCE_LABELING, SEQ2SEQ, INTENT_DETECTION_AND_SLOT_FILLING]
 for task_id in text_tasks:
     Options.register(
         Option(
@@ -451,5 +453,16 @@ Options.register(
         file_format=AudioFile,
         arg=ArgNone,
         file=SPEECH_TO_TEXT_DIR / "audio_files.txt",
+    )
+)
+
+# Entity Linking
+Options.register(
+    Option(
+        display_name=JSONL.name,
+        task_id=ENTITY_LINKING,
+        file_format=JSONL,
+        arg=ArgNone,
+        file=ENTITY_LINKING_DIR / "example.jsonl"
     )
 )

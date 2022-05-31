@@ -8,6 +8,7 @@ export type ProjectType =
   | 'IntentDetectionAndSlotFilling'
   | 'ImageClassification'
   | 'Speech2text'
+  | 'EntityLinking'
 
 export class ProjectReadItem {
   id: number
@@ -62,6 +63,7 @@ export class ProjectReadItem {
   get annotationPageLink(): string {
     const mapping = {
       DocumentClassification: 'text-classification',
+      EntityLinking: 'entity-linking',
       SequenceLabeling: 'sequence-labeling',
       Seq2seq: 'sequence-to-sequence',
       IntentDetectionAndSlotFilling: 'intent-detection-and-slot-filling',
@@ -109,6 +111,7 @@ export class ProjectWriteItem {
   get resourceType(): string {
     const mapping = {
       DocumentClassification: 'TextClassificationProject',
+      EntityLinking: 'EntityLinkingProject',
       SequenceLabeling: 'SequenceLabelingProject',
       Seq2seq: 'Seq2seqProject',
       IntentDetectionAndSlotFilling: 'IntentDetectionAndSlotFillingProject',

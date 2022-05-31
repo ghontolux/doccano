@@ -8,7 +8,7 @@ from .pipeline.catalog import RELATION_EXTRACTION, Format
 from .pipeline.data import BaseData, BinaryData, TextData
 from .pipeline.exceptions import FileParseException
 from .pipeline.factories import create_parser
-from .pipeline.label import CategoryLabel, Label, RelationLabel, SpanLabel, TextLabel
+from .pipeline.label import CategoryLabel, EntitySpanLabel, Label, RelationLabel, SpanLabel, TextLabel
 from .pipeline.label_types import LabelTypes
 from .pipeline.labels import Categories, Labels, Relations, Spans, Texts
 from .pipeline.makers import BinaryExampleMaker, ExampleMaker, LabelMaker
@@ -22,6 +22,7 @@ from examples.models import Example
 from label_types.models import CategoryType, LabelType, RelationType, SpanType
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -134,6 +135,13 @@ class Seq2seqDataset(DatasetWithSingleLabelType):
     labels_class = Texts
 
 
+class EntityLinkingDataset(DatasetWithSingleLabelType):
+    data_class = TextData
+    label_class = EntitySpanLabel
+    label_type = DummyLabelType
+    labels_class = Texts
+
+
 class RelationExtractionDataset(Dataset):
     def __init__(self, reader: Reader, project: Project, **kwargs):
         super().__init__(reader, project, **kwargs)
@@ -213,6 +221,7 @@ class CategoryAndSpanDataset(Dataset):
 def select_dataset(project: Project, task: str, file_format: Format) -> Type[Dataset]:
     mapping = {
         DOCUMENT_CLASSIFICATION: TextClassificationDataset,
+        ENTITY_LINKING: EntityLinkingDataset,
         SEQUENCE_LABELING: SequenceLabelingDataset,
         RELATION_EXTRACTION: RelationExtractionDataset,
         SEQ2SEQ: Seq2seqDataset,

@@ -8,6 +8,7 @@ from .label import Label
 from .label_types import LabelTypes
 from examples.models import Example
 from labels.models import Category as CategoryModel
+from labels.models import EntitySpan as EntitySpanModel
 from labels.models import Label as LabelModel
 from labels.models import Relation as RelationModel
 from labels.models import Span as SpanModel
@@ -84,6 +85,10 @@ class Spans(Labels):
         spans = SpanModel.objects.filter(uuid__in=span_uuids)
         uuid_to_span = {span.uuid: span for span in spans}
         return {span.id: uuid_to_span[span.uuid] for span in self.labels}
+
+
+class EntitySpans(Labels):
+    label_model = EntitySpanModel
 
 
 class Texts(Labels):

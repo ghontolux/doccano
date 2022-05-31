@@ -200,6 +200,7 @@ export default Vue.extend({
     projectTypes() {
       return [
         'DocumentClassification',
+        'EntityLinking',
         'SequenceLabeling',
         'Seq2seq',
         'IntentDetectionAndSlotFilling',
@@ -210,6 +211,7 @@ export default Vue.extend({
     images() {
       return [
         'text_classification.png',
+        'entity_linking.png',
         'sequence_labeling.png',
         'seq2seq.png',
         'intent_detection.png',

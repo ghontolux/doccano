@@ -10,6 +10,7 @@ from django.db.models import QuerySet
 from data_export.models import (
     ExportedCategory,
     ExportedExample,
+    ExportedEntitySpan,
     ExportedLabel,
     ExportedRelation,
     ExportedSpan,
@@ -44,6 +45,12 @@ class Spans(Labels):
     label_class = ExportedSpan
     column = "entities"
     fields = ("example", "label")
+
+
+class EntitySpans(Labels):
+    label_class = ExportedEntitySpan
+    column = "entities"
+    fields = ("example", "ent_id")
 
 
 class Relations(Labels):

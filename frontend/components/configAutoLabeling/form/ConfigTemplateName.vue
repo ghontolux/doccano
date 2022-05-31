@@ -56,6 +56,7 @@ export default Vue.extend({
     taskType(): string {
       return {
         DocumentClassification: 'Category',
+        EntityLinking: 'EntitySpan',
         SequenceLabeling: 'Span',
         Seq2seq: 'Text',
         ImageClassification: 'Category',

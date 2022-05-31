@@ -17,6 +17,7 @@ from .labels import Categories, Labels, Relations, Spans, Texts
 from data_export.models import DATA, ExportedExample
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
+    ENTITY_LINKING,
     IMAGE_CLASSIFICATION,
     INTENT_DETECTION_AND_SLOT_FILLING,
     SEQ2SEQ,
@@ -63,6 +64,12 @@ def create_formatter(project: Project, file_format: str) -> List[Formatter]:
             ],
             FastText.name: [FastTextCategoryFormatter(Categories.column)],
         },
+        ENTITY_LINKING: {
+            JSONL.name : [
+                DictFormatter(EntitySpans.column),
+                RenameFormatter(**mapper_entity_linking),
+            ]
+        },
         SEQUENCE_LABELING: {
             JSONL.name: [
                 DictFormatter(Spans.column),
@@ -101,6 +108,7 @@ def select_label_collection(project: Project) -> List[Type[Labels]]:
     use_relation = getattr(project, "use_relation", False)
     mapping: Dict[str, List[Type[Labels]]] = {
         DOCUMENT_CLASSIFICATION: [Categories],
+        ENTITY_LINKING: [EntitySpans],
         SEQUENCE_LABELING: [Spans, Relations] if use_relation else [Spans],
         SEQ2SEQ: [Texts],
         IMAGE_CLASSIFICATION: [Categories],
