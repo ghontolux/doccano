@@ -13,7 +13,7 @@ from .formatters import (
     RenameFormatter,
     TupledSpanFormatter,
 )
-from .labels import Categories, Labels, Relations, Spans, Texts
+from .labels import Categories, EntitySpans, Labels, Relations, Spans, Texts
 from data_export.models import DATA, ExportedExample
 from projects.models import (
     DOCUMENT_CLASSIFICATION,
@@ -42,6 +42,7 @@ def create_writer(file_format: str) -> writers.Writer:
 def create_formatter(project: Project, file_format: str) -> List[Formatter]:
     use_relation = getattr(project, "use_relation", False)
     mapper_text_classification = {DATA: "text", Categories.column: "label"}
+    mapper_entity_linking = {DATA: "text", EntitySpans.column: "label"} 
     mapper_sequence_labeling = {DATA: "text", Spans.column: "label"}
     mapper_seq2seq = {DATA: "text", Texts.column: "label"}
     mapper_image_classification = {DATA: "filename", Categories.column: "label"}

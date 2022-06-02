@@ -462,7 +462,7 @@ Options.register(
         display_name=JSONL.name,
         task_id=ENTITY_LINKING,
         file_format=JSONL,
-        arg=ArgNone,
+        arg=ArgColumn,
         file=ENTITY_LINKING_DIR / "example.jsonl"
     )
 )

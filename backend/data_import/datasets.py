@@ -10,7 +10,7 @@ from .pipeline.exceptions import FileParseException
 from .pipeline.factories import create_parser
 from .pipeline.label import CategoryLabel, EntitySpanLabel, Label, RelationLabel, SpanLabel, TextLabel
 from .pipeline.label_types import LabelTypes
-from .pipeline.labels import Categories, Labels, Relations, Spans, Texts
+from .pipeline.labels import Categories, Labels, Relations, Spans, Texts, EntitySpans
 from .pipeline.makers import BinaryExampleMaker, ExampleMaker, LabelMaker
 from .pipeline.readers import (
     DEFAULT_LABEL_COLUMN,
@@ -139,7 +139,7 @@ class EntityLinkingDataset(DatasetWithSingleLabelType):
     data_class = TextData
     label_class = EntitySpanLabel
     label_type = DummyLabelType
-    labels_class = Texts
+    labels_class = EntitySpans
 
 
 class RelationExtractionDataset(Dataset):

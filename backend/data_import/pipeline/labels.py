@@ -91,6 +91,8 @@ class EntitySpans(Labels):
     label_model = EntitySpanModel
 
 
+
+
 class Texts(Labels):
     label_model = TextLabelModel
 
