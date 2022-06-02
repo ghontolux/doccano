@@ -6,12 +6,12 @@ import FormGuideline from '@/components/tasks/toolbar/forms/FormGuideline'
 
 const $t = () => {}
 
-const factory = (values = {}) => {
+const factory = () => {
   return mount(FormGuideline, {
     propsData: {
       guidelineText: 'Hello'
     },
-    mocks:{ $t }
+    mocks: { $t }
   })
 }
 

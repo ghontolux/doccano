@@ -18,7 +18,8 @@ class DatasetCatalog(APIView):
     def get(self, request, *args, **kwargs):
         project_id = kwargs["project_id"]
         project = get_object_or_404(Project, pk=project_id)
-        options = Options.filter_by_task(project.project_type)
+        use_relation = getattr(project, "use_relation", False)
+        options = Options.filter_by_task(project.project_type, use_relation)
         return Response(data=options, status=status.HTTP_200_OK)
 
 
@@ -39,6 +40,6 @@ class DatasetExportAPI(APIView):
         file_format = request.data.pop("format")
         export_approved = request.data.pop("exportApproved", False)
         task = export_dataset.delay(
-            project_id=project_id, file_format=file_format, export_approved=export_approved, **request.data
+            project_id=project_id, file_format=file_format, confirmed_only=export_approved, **request.data
         )
         return Response({"task_id": task.task_id})

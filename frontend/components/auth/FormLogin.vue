@@ -7,12 +7,7 @@
   >
     <template #content>
       <v-form v-model="valid">
-        <v-alert
-          v-show="showError"
-          v-model="showError"
-          type="error"
-          dismissible
-        >
+        <v-alert v-show="showError" v-model="showError" type="error" dismissible>
           {{ $t('errors.invalidUserOrPass') }}
         </v-alert>
         <v-text-field
@@ -54,7 +49,7 @@ export default Vue.extend({
   props: {
     login: {
       type: Function,
-      default: (username: string, password: string) => Promise
+      default: () => Promise
     }
   },
   data() {

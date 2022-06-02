@@ -10,7 +10,7 @@
     :loading-text="$t('generic.loading')"
     :no-data-text="$t('vuetify.noDataAvailable')"
     :footer-props="{
-      'showFirstLastPage': true,
+      showFirstLastPage: true,
       'items-per-page-options': [10, 50, 100],
       'items-per-page-text': $t('vuetify.itemsPerPageText'),
       'page-text': $t('dataset.pageText')
@@ -29,9 +29,9 @@
         filled
       />
     </template>
-    <template #[`item.url`]="{ item }">
+    <template #[`item.fileUrl`]="{ item }">
       <v-img
-        :src="item.url"
+        :src="item.fileUrl"
         aspect-ratio="1"
         height="150"
         max-height="150"
@@ -46,11 +46,7 @@
       <span> {{ item.commentCount }} </span>
     </template>
     <template #[`item.action`]="{ item }">
-      <v-btn
-        small
-        color="primary text-capitalize"
-        @click="toLabeling(item)"
-      >
+      <v-btn small color="primary text-capitalize" @click="toLabeling(item)">
         {{ $t('dataset.annotate') }}
       </v-btn>
     </template>
@@ -105,7 +101,7 @@ export default Vue.extend({
         },
         {
           text: 'Image',
-          value: 'url',
+          value: 'fileUrl',
           sortable: false
         },
         {

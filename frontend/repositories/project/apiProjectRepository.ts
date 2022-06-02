@@ -3,11 +3,8 @@ import ApiService from '@/services/api.service'
 import { ProjectRepository, SearchOption } from '@/domain/models/project/projectRepository'
 import { ProjectReadItem, ProjectWriteItem, ProjectItemList } from '~/domain/models/project/project'
 
-
 export class APIProjectRepository implements ProjectRepository {
-  constructor(
-    private readonly request = ApiService
-  ) {}
+  constructor(private readonly request = ApiService) {}
 
   async list({ limit = '10', offset = '0', q = '' }: SearchOption): Promise<ProjectItemList> {
     const url = `/projects?limit=${limit}&offset=${offset}&q=${q}`
@@ -29,7 +26,7 @@ export class APIProjectRepository implements ProjectRepository {
 
   async update(item: ProjectWriteItem): Promise<void> {
     const url = `/projects/${item.id}`
-    const response = await this.request.patch(url, item.toObject())
+    await this.request.patch(url, item.toObject())
   }
 
   async bulkDelete(projectIds: number[]): Promise<void> {
