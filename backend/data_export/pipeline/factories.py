@@ -66,7 +66,7 @@ def create_formatter(project: Project, file_format: str) -> List[Formatter]:
             FastText.name: [FastTextCategoryFormatter(Categories.column)],
         },
         ENTITY_LINKING: {
-            JSONL.name : [
+            JSONL.name: [
                 DictFormatter(EntitySpans.column),
                 RenameFormatter(**mapper_entity_linking),
             ]

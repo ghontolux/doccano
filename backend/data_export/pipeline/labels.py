@@ -50,7 +50,7 @@ class Spans(Labels):
 class EntitySpans(Labels):
     label_class = ExportedEntitySpan
     column = "entities"
-    fields = ("example", "ent_id")
+    fields = ("example",)
 
 
 class Relations(Labels):

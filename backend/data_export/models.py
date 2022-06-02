@@ -69,13 +69,13 @@ class ExportedEntitySpan(EntitySpan):
     def to_dict(self):
         return {
             "id": self.id,
-            "label": self.ent_span,
+            "label": self.ent_id,
             "start_offset": self.start_offset,
             "end_offset": self.end_offset,
         }
 
     def to_tuple(self):
-        return self.start_offset, self.end_offset, self.ent_span
+        return self.start_offset, self.end_offset, self.ent_id
 
     class Meta:
         proxy = True
